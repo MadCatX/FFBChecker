@@ -8,12 +8,13 @@ const QString MainWindow::res_effectPlaying("Playing");
 const QString MainWindow::res_effectStopped("Stopped");
 const QString MainWindow::res_inputFormatErrCap("Invalid input format.");
 
-MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, QWidget* parent) :
+MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& title, QWidget* parent) :
   QMainWindow(parent),
   m_prober(prober),
   ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  this->setWindowTitle(title);
 
   m_constantEffSet = new ConstantEffectSettings();
   m_periodicEffSet = new PeriodicEffectSettings();

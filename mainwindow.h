@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow
   Q_OBJECT
 
 public:
-  explicit MainWindow(std::shared_ptr<DeviceProber> prober, QWidget* parent = 0);
+  explicit MainWindow(std::shared_ptr<DeviceProber> prober, const QString& title, QWidget* parent = 0);
   ~MainWindow();
 
 private:
