@@ -15,10 +15,6 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, QWidget* parent) :
 {
   ui->setupUi(this);
 
-  /* HACK: Remove all default widgets from the stack */
-  for (int i = 0; i < ui->qstw_effectSpecifics->count(); i++)
-    ui->qstw_effectSpecifics->removeWidget(ui->qstw_effectSpecifics->widget(i));
-
   m_constantEffSet = new ConstantEffectSettings();
   m_periodicEffSet = new PeriodicEffectSettings();
   ui->qstw_effectSpecifics->addWidget(m_constantEffSet);

@@ -103,7 +103,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="qle_direction"/>
+       <widget class="QLineEdit" name="qle_direction">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -124,7 +131,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="qle_replayLength"/>
+       <widget class="QLineEdit" name="qle_replayLength">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="ql_replayDelay">
@@ -134,7 +148,14 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="qle_replayDelay"/>
+       <widget class="QLineEdit" name="qle_replayDelay">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -160,10 +181,7 @@
      </layout>
     </item>
     <item>
-     <widget class="QStackedWidget" name="qstw_effectSpecifics">
-      <widget class="QWidget" name="page"/>
-      <widget class="QWidget" name="page_2"/>
-     </widget>
+     <widget class="QStackedWidget" name="qstw_effectSpecifics"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
