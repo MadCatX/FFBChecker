@@ -3,6 +3,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QDebug>
 
+const QString MainWindow::res_deviceErrorCap("Device error");
 const QString MainWindow::res_effectNotLoaded("Not loaded");
 const QString MainWindow::res_effectPlaying("Playing");
 const QString MainWindow::res_effectStopped("Stopped");
@@ -26,6 +27,7 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   connect(ui->cbox_effectSlots, SIGNAL(activated(const int)), this, SLOT(onEffectSlotSelected(const int)));
   connect(ui->cbox_effectTypes, SIGNAL(activated(const int)), this, SLOT(onEffectTypeSelected(const int)));
   connect(ui->qpb_refreshDevices, SIGNAL(clicked()), this, SLOT(onRefreshDevicesClicked()));
+  connect(ui->qpb_remove, SIGNAL(clicked()), this, SLOT(onRemoveEffectClicked()));
   connect(ui->qpb_start, SIGNAL(clicked()), this, SLOT(onStartEffectClicked()));
   connect(ui->qpb_stop, SIGNAL(clicked()), this, SLOT(onStopEffectClicked()));
 }
@@ -119,6 +121,16 @@ void MainWindow::onRefreshDevicesClicked()
   fillDeviceList();
 }
 
+void MainWindow::onRemoveEffectClicked()
+{
+  if (m_activeDevice == nullptr)
+    return;
+  if (!m_activeDevice->removeAndEraseEffect(ui->cbox_effectSlots->currentIndex()))
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to remove the effect.");
+  else
+    setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
+}
+
 void MainWindow::onStartEffectClicked()
 {
   if (m_activeDevice == nullptr)
@@ -134,6 +146,8 @@ void MainWindow::onStartEffectClicked()
   bool ret = m_activeDevice->startEffect(effectSlot, type, params);
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
+  else
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to start the effect.");
 }
 
 void MainWindow::onStopEffectClicked()

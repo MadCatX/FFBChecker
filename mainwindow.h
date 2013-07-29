@@ -38,6 +38,7 @@ private:
   std::shared_ptr<DeviceProber> m_prober;
   Ui::MainWindow* ui;
 
+  static const QString res_deviceErrorCap;
   static const QString res_effectNotLoaded;
   static const QString res_effectPlaying;
   static const QString res_effectStopped;
@@ -48,6 +49,7 @@ private slots:
   void onEffectSlotSelected(const int idx);
   void onEffectTypeSelected(const int idx);
   void onRefreshDevicesClicked();
+  void onRemoveEffectClicked();
   void onStartEffectClicked();
   void onStopEffectClicked();
 };

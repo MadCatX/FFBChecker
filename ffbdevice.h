@@ -30,7 +30,7 @@ public:
   inline const QString& id() const { return c_id; }
   inline int maxEffectCount() const { return c_maxEffectCount; }
   bool queryDeviceCapabilities();
-  bool removeEffect(const int idx);
+  bool removeAndEraseEffect(const int idx);
   bool startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params);
   bool stopEffect(const int idx);
   QString waveformName(const PeriodicWaveforms waveform) const;
@@ -38,6 +38,7 @@ public:
 
 private:
   bool isEffectUpdateable(const std::shared_ptr<FFBEffect> effect, const std::shared_ptr<FFBEffectParameters> params, const FFBEffectTypes type);
+  bool removeEffect(const int idx);
   int uploadEffect(struct ff_effect* effect);
   std::vector<FFBEffectTypes> m_availableEffects;
   std::vector<PeriodicWaveforms> m_availablePeriodicWaveforms;

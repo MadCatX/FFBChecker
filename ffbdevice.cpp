@@ -180,11 +180,28 @@ bool FFBDevice::queryDeviceCapabilities()
   return true;
 }
 
-bool FFBDevice::removeEffect(const int idx)
+bool FFBDevice::removeAndEraseEffect(const int idx)
 {
   if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::NOT_LOADED)
     return true;
 
+  if (removeEffect(idx)) {
+    m_effects[idx] = FFBEffectFactory::createEffect(FFBEffectTypes::NONE);
+    if (m_effects[idx]->type() != FFBEffectTypes::NONE) {
+      qCritical("Unable to empty the effect slot.");
+      return false;
+    }
+  } else {
+    qCritical("Unable to stop the effect.");
+    return false;
+  }
+
+  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::NOT_LOADED);
+  return true;
+}
+
+bool FFBDevice::removeEffect(const int idx)
+{
   if (!stopEffect(idx))
     return false;
 
@@ -192,15 +209,13 @@ bool FFBDevice::removeEffect(const int idx)
   int ret = ioctl(c_fd, EVIOCRMFF, internalIdx);
   if (ret < 0)
     return false;
-
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::NOT_LOADED);
   return true;
 }
 
 bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params)
 {
   if (idx < 0 || idx > c_maxEffectCount) {
-    qDebug() << "Effect index out of bounds";
+    qCritical() << "Effect index out of bounds";
     return false;
   }
 
