@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ConditionEffectSettings</class>
+ <widget class="QWidget" name="ConditionEffectSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>210</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="1" column="0">
+      <widget class="QLabel" name="ql_leftSat">
+       <property name="text">
+        <string>Left saturation:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="qle_leftSat"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="ql_rightSat">
+       <property name="text">
+        <string>Right saturation:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="qle_rightSat"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="ql_leftCoeff">
+       <property name="text">
+        <string>Left coefficient:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="qle_leftCoeff"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="ql_rightCoeff">
+       <property name="text">
+        <string>Right coefficient:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="qle_rightCoeff"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="ql_deadband">
+       <property name="text">
+        <string>Deadband:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="ql_center">
+       <property name="text">
+        <string>Center:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="qle_deadband"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="qle_center"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="ql_subtype">
+       <property name="text">
+        <string>Subtype:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cbox_subtype"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

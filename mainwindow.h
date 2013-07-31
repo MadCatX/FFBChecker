@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "conditioneffectsettings.h"
 #include "constanteffectsettings.h"
 #include "deviceprober.h"
 #include "ffbconstanteffectparameters.h"
@@ -33,6 +34,7 @@ private:
   void setEffectStatusText(const FFBEffect::FFBEffectStatus status);
 
   std::shared_ptr<FFBDevice> m_activeDevice;
+  ConditionEffectSettings* m_conditionEffSet;
   ConstantEffectSettings* m_constantEffSet;
   PeriodicEffectSettings* m_periodicEffSet;
   std::shared_ptr<DeviceProber> m_prober;

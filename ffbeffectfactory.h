@@ -2,6 +2,7 @@
 #define FFBEFFECTFACTORY_H
 
 #include "globals.h"
+#include "ffbconditioneffect.h"
 #include "ffbconstanteffect.h"
 #include "ffbnulleffect.h"
 #include "ffbperiodiceffect.h"

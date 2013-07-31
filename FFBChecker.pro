@@ -28,7 +28,10 @@ SOURCES += main.cpp\
     ffbenvelopeparameters.cpp \
     ffbperiodiceffectparameters.cpp \
     ffbperiodiceffect.cpp \
-    ffbnulleffect.cpp
+    ffbnulleffect.cpp \
+    conditioneffectsettings.cpp \
+    ffbconditioneffectparameters.cpp \
+    ffbconditioneffect.cpp
 
 HEADERS  += mainwindow.h \
     deviceprober.h \
@@ -47,11 +50,15 @@ HEADERS  += mainwindow.h \
     ffbenvelopeparameters.h \
     ffbperiodiceffectparameters.h \
     ffbperiodiceffect.h \
-    ffbnulleffect.h
+    ffbnulleffect.h \
+    conditioneffectsettings.h \
+    ffbconditioneffectparameters.h \
+    ffbconditioneffect.h
 
 FORMS    += mainwindow.ui \
     constanteffectsettings.ui \
     envelopesettings.ui \
-    periodiceffectsettings.ui
+    periodiceffectsettings.ui \
+    conditioneffectsettings.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall

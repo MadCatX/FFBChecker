@@ -17,8 +17,11 @@ class FFBDevice : public QObject
 public:
 
   explicit FFBDevice(const int fd, const QString& id, const int maxEffectCount, QObject* parent = 0);
+  QStringList availableConditionSubtypesList() const;
   QStringList availableEffectsList() const;
   QStringList availableWaveformsList() const;
+  inline ConditionSubtypes conditionSubtypeByIdx(const int idx) { return m_availableConditionSubtypes[idx]; }
+  QString conditionSubtypeName(const ConditionSubtypes subtype) const;
   QString effectName(const FFBEffectTypes effect) const;
   const std::shared_ptr<FFBEffectParameters> effectParameters(const int idx);
   FFBEffect::FFBEffectStatus effectStatusByIdx(const int idx) const;
@@ -40,6 +43,7 @@ private:
   bool isEffectUpdateable(const std::shared_ptr<FFBEffect> effect, const std::shared_ptr<FFBEffectParameters> params, const FFBEffectTypes type);
   bool removeEffect(const int idx);
   int uploadEffect(struct ff_effect* effect);
+  std::vector<ConditionSubtypes> m_availableConditionSubtypes;
   std::vector<FFBEffectTypes> m_availableEffects;
   std::vector<PeriodicWaveforms> m_availablePeriodicWaveforms;
   std::vector<std::shared_ptr<FFBEffect>> m_effects;

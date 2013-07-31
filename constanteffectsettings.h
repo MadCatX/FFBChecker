@@ -14,7 +14,7 @@ class ConstantEffectSettings : public EffectSettings
   Q_OBJECT
 
 public:
-  explicit ConstantEffectSettings(QWidget* parent = 0);
+  explicit ConstantEffectSettings(QWidget* parent = nullptr);
   ~ConstantEffectSettings();
   const EnvelopeSettings* envelopeSettings() const;
   bool fillFromParameters(const std::shared_ptr<FFBEffectParameters> params);

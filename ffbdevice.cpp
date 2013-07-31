@@ -14,6 +14,16 @@ FFBDevice::FFBDevice(const int fd, const QString& id, const int maxEffectCount, 
     m_effects.push_back(FFBEffectFactory::createEffect(FFBEffectTypes::NONE));
 }
 
+QStringList FFBDevice::availableConditionSubtypesList() const
+{
+  QStringList list;
+
+  for (const ConditionSubtypes s : m_availableConditionSubtypes)
+    list << conditionSubtypeName(s);
+
+  return list;
+}
+
 QStringList FFBDevice::availableEffectsList() const
 {
   QStringList list;
@@ -33,6 +43,23 @@ QStringList FFBDevice::availableWaveformsList() const
 
   return list;
 }
+
+QString FFBDevice::conditionSubtypeName(const ConditionSubtypes subtype) const
+{
+  switch (subtype) {
+    case ConditionSubtypes::DAMPER:
+      return "Damper";
+    case ConditionSubtypes::FRICTION:
+      return "Friction";
+    case ConditionSubtypes::INERTIA:
+      return "Inertia";
+    case ConditionSubtypes::SPRING:
+      return "Spring";
+    default:
+      return "Unknown subtype";
+  }
+}
+
 QString FFBDevice::effectName(const FFBEffectTypes effect) const
 {
   switch (effect) {
@@ -42,16 +69,10 @@ QString FFBDevice::effectName(const FFBEffectTypes effect) const
       return "Periodic force";
     case FFBEffectTypes::RAMP:
       return "Ramp";
-    case FFBEffectTypes::SPRING:
-      return "Spring";
-    case FFBEffectTypes::FRICTION:
-      return "Friction";
-    case FFBEffectTypes::DAMPER:
-      return "Damper";
+    case FFBEffectTypes::CONDITION:
+      return "Condition";
     case FFBEffectTypes::RUMBLE:
       return "Rumble";
-    case FFBEffectTypes::INERTIA:
-      return "Inertia";
     default:
       return "Unknown effect";
   }
@@ -154,14 +175,9 @@ bool FFBDevice::queryDeviceCapabilities()
     m_availableEffects.push_back(FFBEffectTypes::PERIODIC);
   if (testBit(FF_RAMP, caps))
     m_availableEffects.push_back(FFBEffectTypes::RAMP);
-  if (testBit(FF_SPRING, caps))
-    m_availableEffects.push_back(FFBEffectTypes::SPRING);
-  if (testBit(FF_FRICTION, caps))
-    m_availableEffects.push_back(FFBEffectTypes::FRICTION);
-  if (testBit(FF_DAMPER, caps))
-    m_availableEffects.push_back(FFBEffectTypes::DAMPER);
-  if (testBit(FF_INERTIA, caps))
-    m_availableEffects.push_back(FFBEffectTypes::INERTIA);
+  if (testBit(FF_SPRING, caps) || testBit(FF_FRICTION, caps) ||
+      testBit(FF_DAMPER, caps) || testBit(FF_INERTIA, caps))
+    m_availableEffects.push_back(FFBEffectTypes::CONDITION);
 
   /* Query waveforms for PERIODIC if the device supports it */
   if (hasEffect(FFBEffectTypes::PERIODIC)) {
@@ -176,6 +192,16 @@ bool FFBDevice::queryDeviceCapabilities()
     if (testBit(FF_SAW_DOWN, caps))
       m_availablePeriodicWaveforms.push_back(PeriodicWaveforms::SAW_DOWN);
   }
+
+  /* Query condition effect subtypes */
+  if (testBit(FF_SPRING, caps))
+    m_availableConditionSubtypes.push_back(ConditionSubtypes::SPRING);
+  if (testBit(FF_FRICTION, caps))
+    m_availableConditionSubtypes.push_back(ConditionSubtypes::FRICTION);
+  if (testBit(FF_DAMPER, caps))
+    m_availableConditionSubtypes.push_back(ConditionSubtypes::DAMPER);
+  if (testBit(FF_INERTIA, caps))
+    m_availableConditionSubtypes.push_back(ConditionSubtypes::INERTIA);
 
   return true;
 }

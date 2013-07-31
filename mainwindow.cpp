@@ -19,6 +19,8 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
 
   m_constantEffSet = new ConstantEffectSettings();
   m_periodicEffSet = new PeriodicEffectSettings();
+  m_conditionEffSet = new ConditionEffectSettings();
+  ui->qstw_effectSpecifics->addWidget(m_conditionEffSet);
   ui->qstw_effectSpecifics->addWidget(m_constantEffSet);
   ui->qstw_effectSpecifics->addWidget(m_periodicEffSet);
 
@@ -39,6 +41,8 @@ EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
       return m_constantEffSet;
     case FFBEffectTypes::PERIODIC:
       return m_periodicEffSet;
+    case FFBEffectTypes::CONDITION:
+      return m_conditionEffSet;
     default:
       abort();
   }
@@ -49,6 +53,7 @@ void MainWindow::fillDeviceList()
   ui->cbox_devices->clear();
   ui->cbox_devices->addItems(m_prober->listDevicesByID());
 }
+
 void MainWindow::fillEffectSlotsList(const int idx)
 {
   ui->cbox_effectSlots->clear();
@@ -72,6 +77,7 @@ void MainWindow::onDeviceSelected(const QString& id)
 
   fillEffectSlotsList(m_activeDevice->maxEffectCount());
   fillEffectTypesList(m_activeDevice->availableEffectsList());
+  m_conditionEffSet->fillAvailableSubtypesList(m_activeDevice->availableConditionSubtypesList());
   m_periodicEffSet->fillAvailableWaveformsList(m_activeDevice->availableWaveformsList());
 }
 
@@ -233,6 +239,41 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
 
       params = iparams;
       break;
+    }
+    case FFBEffectTypes::CONDITION:
+    {
+      std::shared_ptr<FFBConditionEffectParameters> cdParams = std::shared_ptr<FFBConditionEffectParameters>(new FFBConditionEffectParameters);
+      if (!readGeneralEffectParameters(params))
+        return false;
+      if (!cdParams->centerFromString(m_conditionEffSet->center())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Center\"");
+        return false;
+      }
+      if (!cdParams->deadbandFromString(m_conditionEffSet->deadband())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Deadband\"");
+        return false;
+      }
+      if (!cdParams->leftCoeffFromString(m_conditionEffSet->leftCoeff())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left coefficient\"");
+        return false;
+      }
+      if (!cdParams->rightCoeffFromString(m_conditionEffSet->rightCoeff())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right coefficient\"");
+        return false;
+      }
+      if (!cdParams->leftSatFromString(m_conditionEffSet->leftSat())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left saturation\"");
+        return false;
+      }
+      if (!cdParams->rightSatFromString(m_conditionEffSet->rightSat())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right saturation\"");
+        return false;
+      }
+
+      ConditionSubtypes subtype = m_activeDevice->conditionSubtypeByIdx(m_conditionEffSet->subtypeIdx());
+      cdParams->subtypeFromIdx(subtype);
+
+      params = cdParams;
     }
     default:
       qDebug() << "Unhandled type of effect";
