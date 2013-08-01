@@ -79,8 +79,7 @@ void MainWindow::onDeviceSelected(const QString& id)
   fillEffectTypesList(m_activeDevice->availableEffectsList());
   m_conditionEffSet->fillAvailableSubtypesList(m_activeDevice->availableConditionSubtypesList());
   m_periodicEffSet->fillAvailableWaveformsList(m_activeDevice->availableWaveformsList());
-  ui->cbox_effectTypes->setCurrentIndex(0);
-  ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(m_activeDevice->effectTypeFromSelectionIdx(0)));
+  onEffectSlotSelected(0);
 }
 
 void MainWindow::onEffectSlotSelected(const int idx)

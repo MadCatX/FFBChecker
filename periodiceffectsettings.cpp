@@ -15,6 +15,7 @@ const EnvelopeSettings* PeriodicEffectSettings::envelopeSettings() const
 
 void PeriodicEffectSettings::fillAvailableWaveformsList(const QStringList& list)
 {
+  ui->cbox_waveform->clear();
   ui->cbox_waveform->addItems(list);
 }
 
