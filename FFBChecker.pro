@@ -62,3 +62,6 @@ FORMS    += mainwindow.ui \
     conditioneffectsettings.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall
+
+OTHER_FILES += \
+    TODO.txt
