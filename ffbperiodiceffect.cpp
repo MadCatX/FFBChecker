@@ -115,8 +115,14 @@ bool FFBPeriodicEffect::operator==(const FFBEffect& other) const
 {
   if (this->type() != other.type())
     return false;
-  else
-    return this->m_params->waveform == dynamic_cast<const FFBPeriodicEffect&>(other).m_params->waveform;
+  else {
+    try {
+      const FFBPeriodicEffect& eff = dynamic_cast<const FFBPeriodicEffect&>(other);
+      return this->m_params->waveform == eff.m_params->waveform;
+    } catch(std::bad_cast&) {
+      return false;
+    }
+  }
 }
 
 bool FFBPeriodicEffect::operator!=(const FFBEffect& other) const
