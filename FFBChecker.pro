@@ -31,7 +31,10 @@ SOURCES += main.cpp\
     ffbnulleffect.cpp \
     conditioneffectsettings.cpp \
     ffbconditioneffectparameters.cpp \
-    ffbconditioneffect.cpp
+    ffbconditioneffect.cpp \
+    rampeffectsettings.cpp \
+    ffbrampeffectparameters.cpp \
+    ffbrampeffect.cpp
 
 HEADERS  += mainwindow.h \
     deviceprober.h \
@@ -53,15 +56,20 @@ HEADERS  += mainwindow.h \
     ffbnulleffect.h \
     conditioneffectsettings.h \
     ffbconditioneffectparameters.h \
-    ffbconditioneffect.h
+    ffbconditioneffect.h \
+    rampeffectsettings.h \
+    ffbrampeffectparameters.h \
+    ffbrampeffect.h
 
 FORMS    += mainwindow.ui \
     constanteffectsettings.ui \
     envelopesettings.ui \
     periodiceffectsettings.ui \
-    conditioneffectsettings.ui
+    conditioneffectsettings.ui \
+    rampeffectsettings.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall
+QMAKE_CXXFLAGS_DEBUG += -ggdb3
 
 OTHER_FILES += \
     TODO.txt

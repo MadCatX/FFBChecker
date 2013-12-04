@@ -1,11 +1,24 @@
 #include "conditioneffectsettings.h"
 #include "ui_conditioneffectsettings.h"
+#include <QDebug>
 
 ConditionEffectSettings::ConditionEffectSettings(QWidget* parent) :
   EffectSettings(parent),
   ui(new Ui::ConditionEffectSettings)
 {
   ui->setupUi(this);
+  connect(ui->cbox_axis, SIGNAL(currentIndexChanged(int)), this, SLOT(axisChanged(const int)));
+}
+
+void ConditionEffectSettings::axisChanged(const int idx)
+{
+  ui->qstw_center->setCurrentIndex(idx);
+  ui->qstw_deadband->setCurrentIndex(idx);
+  ui->qstw_leftCoeff->setCurrentIndex(idx);
+  ui->qstw_leftSat->setCurrentIndex(idx);
+  ui->qstw_rightCoeff->setCurrentIndex(idx);
+  ui->qstw_rightSat->setCurrentIndex(idx);
+  qDebug() << "Axis changed" << idx;
 }
 
 void ConditionEffectSettings::fillAvailableSubtypesList(const QStringList& list)
@@ -27,43 +40,91 @@ bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffect
 
 bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBConditionEffectParameters> cdParams)
 {
-  ui->qle_center->setText(QString::number(cdParams->center));
-  ui->qle_deadband->setText(QString::number(cdParams->deadband));
-  ui->qle_leftCoeff->setText(QString::number(cdParams->leftCoeff));
-  ui->qle_rightCoeff->setText(QString::number(cdParams->rightCoeff));
-  ui->qle_leftSat->setText(QString::number(cdParams->leftSat));
-  ui->qle_rightSat->setText(QString::number(cdParams->rightCoeff));
+  ui->qle_centerX->setText(QString::number(cdParams->center[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_deadbandX->setText(QString::number(cdParams->deadband[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_leftCoeffX->setText(QString::number(cdParams->leftCoeff[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_rightCoeffX->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_leftSatX->setText(QString::number(cdParams->leftSat[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_rightSatX->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_centerY->setText(QString::number(cdParams->center[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_deadbandY->setText(QString::number(cdParams->deadband[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_leftCoeffY->setText(QString::number(cdParams->leftCoeff[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_rightCoeffY->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_leftSatY->setText(QString::number(cdParams->leftSat[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_rightSatY->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::Y]));
   return true;
 }
 
-QString ConditionEffectSettings::center() const
+FFBConditionEffectParameters::Axis ConditionEffectSettings::axis() const
 {
-  return ui->qle_center->text();
+  switch (ui->cbox_axis->currentIndex()) {
+    case 0:
+      return FFBConditionEffectParameters::Axis::X;
+    case 1:
+      return FFBConditionEffectParameters::Axis::Y;
+    default:
+      return FFBConditionEffectParameters::Axis::NONE;
+  }
 }
 
-QString ConditionEffectSettings::deadband() const
+QString ConditionEffectSettings::centerX() const
 {
-  return ui->qle_deadband->text();
+  return ui->qle_centerX->text();
 }
 
-QString ConditionEffectSettings::leftCoeff() const
+QString ConditionEffectSettings::centerY() const
 {
-  return ui->qle_leftCoeff->text();
+  return ui->qle_centerY->text();
 }
 
-QString ConditionEffectSettings::rightCoeff() const
+QString ConditionEffectSettings::deadbandX() const
 {
-  return ui->qle_rightCoeff->text();
+  return ui->qle_deadbandX->text();
 }
 
-QString ConditionEffectSettings::leftSat() const
+QString ConditionEffectSettings::deadbandY() const
 {
-  return ui->qle_leftSat->text();
+  return ui->qle_deadbandY->text();
 }
 
-QString ConditionEffectSettings::rightSat() const
+QString ConditionEffectSettings::leftCoeffX() const
 {
-  return ui->qle_rightSat->text();
+  return ui->qle_leftCoeffX->text();
+}
+
+QString ConditionEffectSettings::leftCoeffY() const
+{
+  return ui->qle_leftCoeffY->text();
+}
+
+QString ConditionEffectSettings::rightCoeffX() const
+{
+  return ui->qle_rightCoeffX->text();
+}
+
+QString ConditionEffectSettings::rightCoeffY() const
+{
+  return ui->qle_rightCoeffY->text();
+}
+
+QString ConditionEffectSettings::leftSatX() const
+{
+  return ui->qle_leftSatX->text();
+}
+
+QString ConditionEffectSettings::leftSatY() const
+{
+  return ui->qle_leftSatY->text();
+}
+
+QString ConditionEffectSettings::rightSatX() const
+{
+  return ui->qle_rightSatX->text();
+}
+
+QString ConditionEffectSettings::rightSatY() const
+{
+  return ui->qle_rightSatY->text();
 }
 
 int ConditionEffectSettings::subtypeIdx() const

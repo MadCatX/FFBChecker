@@ -20,9 +20,11 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   m_constantEffSet = new ConstantEffectSettings();
   m_periodicEffSet = new PeriodicEffectSettings();
   m_conditionEffSet = new ConditionEffectSettings();
+  m_rampEffSet = new RampEffectSettings();
   ui->qstw_effectSpecifics->addWidget(m_conditionEffSet);
   ui->qstw_effectSpecifics->addWidget(m_constantEffSet);
   ui->qstw_effectSpecifics->addWidget(m_periodicEffSet);
+  ui->qstw_effectSpecifics->addWidget(m_rampEffSet);
 
   fillDeviceList();
   connect(ui->cbox_devices, SIGNAL(activated(const QString&)), this, SLOT(onDeviceSelected(const QString&)));
@@ -43,6 +45,8 @@ EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
       return m_periodicEffSet;
     case FFBEffectTypes::CONDITION:
       return m_conditionEffSet;
+    case FFBEffectTypes::RAMP:
+      return m_rampEffSet;
     default:
       abort();
   }
@@ -243,38 +247,82 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
     }
     case FFBEffectTypes::CONDITION:
     {
-      std::shared_ptr<FFBConditionEffectParameters> cdParams = std::shared_ptr<FFBConditionEffectParameters>(new FFBConditionEffectParameters);
-      if (!readGeneralEffectParameters(params))
+      std::shared_ptr<FFBConditionEffectParameters> iParams = std::shared_ptr<FFBConditionEffectParameters>(new FFBConditionEffectParameters);
+      if (!readGeneralEffectParameters(iParams))
         return false;
-      if (!cdParams->centerFromString(m_conditionEffSet->center())) {
+      if (!iParams->centerFromString(m_conditionEffSet->centerX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Center\"");
         return false;
       }
-      if (!cdParams->deadbandFromString(m_conditionEffSet->deadband())) {
+      if (!iParams->centerFromString(m_conditionEffSet->centerY(), FFBConditionEffectParameters::Axis::Y)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Center\"");
+        return false;
+      }
+      if (!iParams->deadbandFromString(m_conditionEffSet->deadbandX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Deadband\"");
         return false;
       }
-      if (!cdParams->leftCoeffFromString(m_conditionEffSet->leftCoeff())) {
+      if (!iParams->deadbandFromString(m_conditionEffSet->deadbandY(), FFBConditionEffectParameters::Axis::Y)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Deadband\"");
+        return false;
+      }
+      if (!iParams->leftCoeffFromString(m_conditionEffSet->leftCoeffX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left coefficient\"");
         return false;
       }
-      if (!cdParams->rightCoeffFromString(m_conditionEffSet->rightCoeff())) {
+      if (!iParams->leftCoeffFromString(m_conditionEffSet->leftCoeffY(), FFBConditionEffectParameters::Axis::Y)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left coefficient\"");
+        return false;
+      }
+      if (!iParams->rightCoeffFromString(m_conditionEffSet->rightCoeffX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right coefficient\"");
         return false;
       }
-      if (!cdParams->leftSatFromString(m_conditionEffSet->leftSat())) {
+      if (!iParams->rightCoeffFromString(m_conditionEffSet->rightCoeffY(), FFBConditionEffectParameters::Axis::Y)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right coefficient\"");
+        return false;
+      }
+      if (!iParams->leftSatFromString(m_conditionEffSet->leftSatX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left saturation\"");
         return false;
       }
-      if (!cdParams->rightSatFromString(m_conditionEffSet->rightSat())) {
+      if (!iParams->leftSatFromString(m_conditionEffSet->leftSatY(), FFBConditionEffectParameters::Axis::Y)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Left saturation\"");
+        return false;
+      }
+      if (!iParams->rightSatFromString(m_conditionEffSet->rightSatX(), FFBConditionEffectParameters::Axis::X)) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right saturation\"");
+        return false;
+      }
+      if (!iParams->rightSatFromString(m_conditionEffSet->rightSatY(), FFBConditionEffectParameters::Axis::Y)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Right saturation\"");
         return false;
       }
 
       ConditionSubtypes subtype = m_activeDevice->conditionSubtypeByIdx(m_conditionEffSet->subtypeIdx());
-      cdParams->subtypeFromIdx(subtype);
+      iParams->subtypeFromIdx(subtype);
 
-      params = cdParams;
+      params = iParams;
+      break;
+    }
+    case FFBEffectTypes::RAMP: {
+      std::shared_ptr<FFBRampEffectParameters> iParams = std::shared_ptr<FFBRampEffectParameters>(new FFBRampEffectParameters);
+      if (!readGeneralEffectParameters(iParams))
+        return false;
+      if (!readEnvelopeParameters(iParams, m_rampEffSet->envelopeSettings()))
+        return false;
+
+      if (!iParams->endLevelFromString(m_rampEffSet->endLevel())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"End level\"");
+        return false;
+      }
+      if (!iParams->startLevelFromString(m_rampEffSet->startLevel())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Start level\"");
+        return false;
+      }
+
+      params = iParams;
+      break;
     }
     default:
       qDebug() << "Unhandled type of effect";

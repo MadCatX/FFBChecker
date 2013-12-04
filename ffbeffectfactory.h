@@ -6,6 +6,7 @@
 #include "ffbconstanteffect.h"
 #include "ffbnulleffect.h"
 #include "ffbperiodiceffect.h"
+#include "ffbrampeffect.h"
 
 class FFBEffectFactory
 {

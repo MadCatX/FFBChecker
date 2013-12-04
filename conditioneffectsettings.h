@@ -17,16 +17,26 @@ public:
   void fillAvailableSubtypesList(const QStringList& list);
   bool fillFromParameters(const std::shared_ptr<FFBEffectParameters> params);
   bool fillFromParameters(const std::shared_ptr<FFBConditionEffectParameters> cdParams);
-  QString center() const;
-  QString deadband() const;
-  QString leftCoeff() const;
-  QString rightCoeff() const;
-  QString leftSat() const;
-  QString rightSat() const;
+  FFBConditionEffectParameters::Axis axis() const;
+  QString centerX() const;
+  QString centerY() const;
+  QString deadbandX() const;
+  QString deadbandY() const;
+  QString leftCoeffX() const;
+  QString leftCoeffY() const;
+  QString rightCoeffX() const;
+  QString rightCoeffY() const;
+  QString leftSatX() const;
+  QString leftSatY() const;
+  QString rightSatX() const;
+  QString rightSatY() const;
   int subtypeIdx() const;
 
 private:
   Ui::ConditionEffectSettings* ui;
+
+private slots:
+  void axisChanged(const int);
 };
 
 #endif // CONDITIONEFFECTSETTINGS_H

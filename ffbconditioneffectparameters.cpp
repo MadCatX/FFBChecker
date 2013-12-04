@@ -1,43 +1,67 @@
 #include "ffbconditioneffectparameters.h"
 
 FFBConditionEffectParameters::FFBConditionEffectParameters() :
-  FFBEffectParameters(),
-  center(0),
-  deadband(0),
-  leftCoeff(0),
-  rightCoeff(0),
-  leftSat(0),
-  rightSat(0)
+  FFBEffectParameters()
 {}
 
-bool FFBConditionEffectParameters::centerFromString(const QString& center)
+bool FFBConditionEffectParameters::centerFromString(const QString& center, Axis a)
 {
-  return qstringToInt(this->center, center);
+  bool ok = false;
+  int val = center.toInt(&ok);
+  if (!ok) return false;
+
+  this->center[a] = val;
+  return true;
 }
 
-bool FFBConditionEffectParameters::deadbandFromString(const QString& deadband)
+bool FFBConditionEffectParameters::deadbandFromString(const QString& deadband, Axis a)
 {
-  return qstringToInt(this->deadband, deadband);
+  bool ok = false;
+  int val = deadband.toInt(&ok);
+  if (!ok) return false;
+
+  this->deadband[a] = val;
+  return true;
 }
 
-bool FFBConditionEffectParameters::leftCoeffFromString(const QString& leftCoeff)
+bool FFBConditionEffectParameters::leftCoeffFromString(const QString& leftCoeff, Axis a)
 {
-  return qstringToInt(this->leftCoeff, leftCoeff);
+  bool ok = false;
+  int val = leftCoeff.toInt(&ok);
+  if (!ok) return false;
+
+  this->leftCoeff[a] = val;
+  return true;
 }
 
-bool FFBConditionEffectParameters::rightCoeffFromString(const QString& rightCoeff)
+bool FFBConditionEffectParameters::rightCoeffFromString(const QString& rightCoeff, Axis a)
 {
-  return qstringToInt(this->rightCoeff, rightCoeff);
+  bool ok = false;
+  int val = rightCoeff.toInt(&ok);
+  if (!ok) return false;
+
+  this->rightCoeff[a] = val;
+  return true;
 }
 
-bool FFBConditionEffectParameters::leftSatFromString(const QString& leftSat)
+bool FFBConditionEffectParameters::leftSatFromString(const QString& leftSat, Axis a)
 {
-  return qstringToInt(this->leftSat, leftSat);
+  bool ok = false;
+  int val = leftSat.toInt(&ok);
+  if (!ok) return false;
+
+  this->leftSat[a] = val;
+  return true;
 }
 
-bool FFBConditionEffectParameters::rightSatFromString(const QString& rightSat)
+bool FFBConditionEffectParameters::rightSatFromString(const QString& rightSat, Axis a)
 {
-  return qstringToInt(this->rightSat, rightSat);
+  bool ok = false;
+  int val = rightSat.toInt(&ok);
+  if (!ok) return false;
+
+  this->rightSat[a] = val;
+  return true;
 }
 
 

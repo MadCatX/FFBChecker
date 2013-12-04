@@ -15,6 +15,8 @@ std::shared_ptr<FFBEffect> FFBEffectFactory::createEffect(FFBEffectTypes type)
       return std::shared_ptr<FFBEffect>(new FFBPeriodicEffect());
     case FFBEffectTypes::CONDITION:
       return std::shared_ptr<FFBEffect>(new FFBConditionEffect());
+    case FFBEffectTypes::RAMP:
+      return std::shared_ptr<FFBEffect>(new FFBRampEffect());
     default:
       return nullptr;
   }

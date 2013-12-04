@@ -7,7 +7,9 @@
 #include "ffbconstanteffectparameters.h"
 #include "ffbdevice.h"
 #include "ffbperiodiceffectparameters.h"
+#include "ffbrampeffectparameters.h"
 #include "periodiceffectsettings.h"
+#include "rampeffectsettings.h"
 #include <memory>
 #include <QMainWindow>
 
@@ -37,6 +39,7 @@ private:
   ConditionEffectSettings* m_conditionEffSet;
   ConstantEffectSettings* m_constantEffSet;
   PeriodicEffectSettings* m_periodicEffSet;
+  RampEffectSettings* m_rampEffSet;
   std::shared_ptr<DeviceProber> m_prober;
   Ui::MainWindow* ui;
 

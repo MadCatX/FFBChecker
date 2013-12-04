@@ -8,12 +8,19 @@ struct ff_effect* FFBConditionEffect::createFFStruct()
 {
   struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
 
-  eff->u.condition[0].center = m_params->center;
-  eff->u.condition[0].deadband = m_params->deadband;
-  eff->u.condition[0].left_coeff = m_params->leftCoeff;
-  eff->u.condition[0].right_coeff = m_params->rightCoeff;
-  eff->u.condition[0].left_saturation = m_params->leftSat;
-  eff->u.condition[0].right_saturation = m_params->rightSat;
+  eff->u.condition[0].center = m_params->center[FFBConditionEffectParameters::Axis::X];
+  eff->u.condition[0].deadband = m_params->deadband[FFBConditionEffectParameters::Axis::X];
+  eff->u.condition[0].left_coeff = m_params->leftCoeff[FFBConditionEffectParameters::Axis::X];
+  eff->u.condition[0].right_coeff = m_params->rightCoeff[FFBConditionEffectParameters::Axis::X];
+  eff->u.condition[0].left_saturation = m_params->leftSat[FFBConditionEffectParameters::Axis::X];
+  eff->u.condition[0].right_saturation = m_params->rightSat[FFBConditionEffectParameters::Axis::X];
+
+  eff->u.condition[1].center = m_params->center[FFBConditionEffectParameters::Axis::Y];
+  eff->u.condition[1].deadband = m_params->deadband[FFBConditionEffectParameters::Axis::Y];
+  eff->u.condition[1].left_coeff = m_params->leftCoeff[FFBConditionEffectParameters::Axis::Y];
+  eff->u.condition[1].right_coeff = m_params->rightCoeff[FFBConditionEffectParameters::Axis::Y];
+  eff->u.condition[1].left_saturation = m_params->leftSat[FFBConditionEffectParameters::Axis::Y];
+  eff->u.condition[1].right_saturation = m_params->rightSat[FFBConditionEffectParameters::Axis::Y];
 
   switch (m_params->subtype) {
     case ConditionSubtypes::DAMPER:
@@ -40,9 +47,9 @@ struct ff_effect* FFBConditionEffect::createFFStruct()
 bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
-    const std::shared_ptr<FFBConditionEffectParameters> cdParams = std::dynamic_pointer_cast<FFBConditionEffectParameters>(params);
-    return setParameters(cdParams);
-  } catch (std::bad_cast& ex) {
+    return setParameters(std::dynamic_pointer_cast<FFBConditionEffectParameters>(params));
+    //return setParameters(cdParams);
+  } catch (const std::bad_cast& ex) {
     qCritical(ex.what());
     return false;
   }
@@ -54,33 +61,57 @@ bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectP
   if (!checkGenericParameters(params))
     return false;
 
-  if (!checkBoundsInclusive(m_params->center, -0x7FFF, 0x7FFF)) {
-    reportError("Center out of bounds,");
+  if (!checkBoundsInclusive(params->center[FFBConditionEffectParameters::Axis::X], -0x7FFF, 0x7FFF)) {
+    reportError("Center X out of bounds,");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->center[FFBConditionEffectParameters::Axis::Y], -0x7FFF, 0x7FFF)) {
+    reportError("Center Y out of bounds,");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->deadband, 0, 0xFFFF)) {
-    reportError("Deadband out of bounds.");
+  if (!checkBoundsInclusive(params->deadband[FFBConditionEffectParameters::Axis::X], 0, 0xFFFF)) {
+    reportError("Deadband X out of bounds.");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->deadband[FFBConditionEffectParameters::Axis::Y], 0, 0xFFFF)) {
+    reportError("Deadband Y out of bounds.");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->leftCoeff, -0x7FFF, 0x7FFF)) {
-    reportError("Left coefficient out of bounds.");
+  if (!checkBoundsInclusive(params->leftCoeff[FFBConditionEffectParameters::Axis::X], -0x7FFF, 0x7FFF)) {
+    reportError("Left coefficient X out of bounds.");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->leftCoeff[FFBConditionEffectParameters::Axis::Y], -0x7FFF, 0x7FFF)) {
+    reportError("Left coefficient Y out of bounds.");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->rightCoeff, -0x7FFF, 0x7FFF)) {
-    reportError("Right coefficient out of bounds.");
+  if (!checkBoundsInclusive(params->rightCoeff[FFBConditionEffectParameters::Axis::X], -0x7FFF, 0x7FFF)) {
+    reportError("Right coefficient X out of bounds.");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->rightCoeff[FFBConditionEffectParameters::Axis::Y], -0x7FFF, 0x7FFF)) {
+    reportError("Right coefficient Y out of bounds.");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->leftSat, 0, 0xFFFF)) {
-    reportError("Left saturation out of bounds.");
+  if (!checkBoundsInclusive(params->leftSat[FFBConditionEffectParameters::Axis::X], 0, 0xFFFF)) {
+    reportError("Left saturation X out of bounds.");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->leftSat[FFBConditionEffectParameters::Axis::Y], 0, 0xFFFF)) {
+    reportError("Left saturation Y out of bounds.");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->rightSat, 0, 0xFFFF)) {
-    reportError("Right saturation out of bounds.");
+  if (!checkBoundsInclusive(params->rightSat[FFBConditionEffectParameters::Axis::X], 0, 0xFFFF)) {
+    reportError("Right saturation X out of bounds.");
+    return false;
+  }
+  if (!checkBoundsInclusive(params->rightSat[FFBConditionEffectParameters::Axis::Y], 0, 0xFFFF)) {
+    reportError("Right saturation Y out of bounds.");
     return false;
   }
 
