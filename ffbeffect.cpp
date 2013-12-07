@@ -1,4 +1,5 @@
 #include "ffbeffect.h"
+#include "globalsettings.h"
 #include <QtWidgets/QMessageBox>
 
 FFBEffect::FFBEffect(FFBEffectTypes type)
@@ -28,6 +29,9 @@ void FFBEffect::reportError(const QString& errorMsg) const
 
 bool FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
+  if (!GlobalSettings::GS()->doSanityChecks)
+    return true;
+
   if (!checkBoundsInclusive(params->direction, 0, 0xFFFF)) {
     reportError("Direction out of bounds.");
     return false;

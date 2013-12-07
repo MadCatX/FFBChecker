@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     ffbconditioneffect.cpp \
     rampeffectsettings.cpp \
     ffbrampeffectparameters.cpp \
-    ffbrampeffect.cpp
+    ffbrampeffect.cpp \
+    globalsettings.cpp
 
 HEADERS  += mainwindow.h \
     deviceprober.h \
@@ -59,7 +60,8 @@ HEADERS  += mainwindow.h \
     ffbconditioneffect.h \
     rampeffectsettings.h \
     ffbrampeffectparameters.h \
-    ffbrampeffect.h
+    ffbrampeffect.h \
+    globalsettings.h
 
 FORMS    += mainwindow.ui \
     constanteffectsettings.ui \

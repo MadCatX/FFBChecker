@@ -1,3 +1,4 @@
+#include "globalsettings.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QMessageBox>
@@ -25,6 +26,9 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   ui->qstw_effectSpecifics->addWidget(m_constantEffSet);
   ui->qstw_effectSpecifics->addWidget(m_periodicEffSet);
   ui->qstw_effectSpecifics->addWidget(m_rampEffSet);
+
+  if (GlobalSettings::GS()->doSanityChecks)
+    ui->ql_noChecksWarning->setHidden(true);
 
   fillDeviceList();
   connect(ui->cbox_devices, SIGNAL(activated(const QString&)), this, SLOT(onDeviceSelected(const QString&)));

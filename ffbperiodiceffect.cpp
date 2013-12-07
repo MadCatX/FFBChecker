@@ -1,4 +1,5 @@
 #include "ffbperiodiceffect.h"
+#include "globalsettings.h"
 #include <QDebug>
 
 FFBPeriodicEffect::FFBPeriodicEffect() :
@@ -62,49 +63,51 @@ bool FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffectPar
   if (!checkGenericParameters(params))
     return false;
 
-  if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)) {
-    reportError("Attack length out of bounds.");
-    return false;
-  }
+  if (GlobalSettings::GS()->doSanityChecks) {
+    if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)) {
+      reportError("Attack length out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
-    reportError("Attack level out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
+      reportError("Attack level out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
-    reportError("Fade length out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
+      reportError("Fade length out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF)) {
-    reportError("Fade level out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF)) {
+      reportError("Fade level out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
-    reportError("Magnitude out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
+      reportError("Magnitude out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
-    reportError("Offset out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
+      reportError("Offset out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->period, 0, 0xFFFF)) {
-    reportError("Period out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->period, 0, 0xFFFF)) {
+      reportError("Period out of bounds.");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->phase, 0, 0xFFFF)) {
-    reportError("Phase out of bounds.");
-    return false;
-  }
+    if (!checkBoundsInclusive(params->phase, 0, 0xFFFF)) {
+      reportError("Phase out of bounds.");
+      return false;
+    }
 
-  if (params->waveform == PeriodicWaveforms::NONE) {
-    reportError("Invalid waveform type.");
-    return false;
+    if (params->waveform == PeriodicWaveforms::NONE) {
+      reportError("Invalid waveform type.");
+      return false;
+    }
   }
 
   m_params = params;

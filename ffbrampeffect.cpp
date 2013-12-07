@@ -1,4 +1,5 @@
 #include "ffbrampeffect.h"
+#include "globalsettings.h"
 
 FFBRampEffect::FFBRampEffect() :
   FFBEffect(FFBEffectTypes::RAMP)
@@ -40,29 +41,36 @@ bool FFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParameters>
   if (!checkGenericParameters(params))
     return false;
 
- if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)) {
-    reportError("Attack length out of bounds.");
-    return false;
-  }
-
-  if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
-    reportError("Attack level out of bounds.");
-    return false;
-  }
-
-  if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
-    reportError("Fade length out of bounds.");
-    return false;
-  }
-
-  if (!checkBoundsInclusive(params->endLevel, -0x7FFF, 0x7FFF)) {
-    reportError("End level out of bounds");
-    return false;
-  }
-
-  if (!checkBoundsInclusive(params->startLevel, -0x7FFF, 0x7FFF)) {
-      reportError("Start level out of bounds");
+  if (GlobalSettings::GS()->doSanityChecks) {
+    if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)) {
+      reportError("Attack length out of bounds.");
       return false;
+    }
+
+    if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
+      reportError("Attack level out of bounds.");
+      return false;
+    }
+
+    if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
+      reportError("Fade length out of bounds.");
+      return false;
+    }
+
+    if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF)) {
+      reportError("Fade level out of bounds.");
+      return false;
+    }
+
+    if (!checkBoundsInclusive(params->endLevel, -0x7FFF, 0x7FFF)) {
+      reportError("End level out of bounds");
+      return false;
+    }
+
+    if (!checkBoundsInclusive(params->startLevel, -0x7FFF, 0x7FFF)) {
+        reportError("Start level out of bounds");
+        return false;
+    }
   }
 
   m_params = params;

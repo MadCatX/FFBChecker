@@ -1,4 +1,5 @@
 #include "ffbconstanteffect.h"
+#include "globalsettings.h"
 
 FFBConstantEffect::FFBConstantEffect() :
   FFBEffect(FFBEffectTypes::CONSTANT)
@@ -37,18 +38,27 @@ bool FFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffectPar
   if (!checkGenericParameters(params))
     return false;
 
-  if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF))
-    return false;
-  if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF))
-    return false;
-  if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF))
-    return false;
-  if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF))
-    return false;
+  if (GlobalSettings::GS()->doSanityChecks) {
+    if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)){
+      reportError("Attack length out of bounds");
+      return false;
+    }
+    if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
+      reportError("Attack level out of bounds");
+      return false;
+    } if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
+      reportError("Fade length out of bounds");
+      return false;
+    }
+    if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF)) {
+      reportError("Fade level out of bounds");
+      return false;
+    }
 
-  if (!checkBoundsInclusive(params->level, -0x7FFF, 0x7FFF)) {
-    reportError("Level out of bounds.");
-    return false;
+    if (!checkBoundsInclusive(params->level, -0x7FFF, 0x7FFF)) {
+      reportError("Level out of bounds.");
+      return false;
+    }
   }
 
   m_params = params;
