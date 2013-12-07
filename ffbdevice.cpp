@@ -1,5 +1,6 @@
 #include "ffbdevice.h"
 #include "ffbeffectfactory.h"
+#include <QtWidgets/QMessageBox>
 #include <QDebug>
 
 const quint8 FFBDevice::BITS_PER_LONG = sizeof(unsigned long) * 8;
@@ -275,12 +276,14 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
   struct ff_effect* kernelEff = nullptr;
   kernelEff = m_effects[idx]->createFFStruct();
   if (kernelEff == nullptr) {
+    QMessageBox::critical(nullptr, "FFB Device", "ff_effect struct could not have been created. Effect not uploaded.");
     qDebug() << "struct ff_effect not created";
     return false;
   }
   int ret = uploadEffect(kernelEff);
   if (ret < 0) {
-    qDebug() << "Effect not uploaded";
+    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
+    qDebug() << "Effect not uploaded" << ret;
     delete kernelEff;
     return false;
   }
@@ -296,7 +299,8 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {
-    qDebug() << "Effect not started";
+    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been started, error code: " + QString::number(ret));
+    qDebug() << "Effect not started" << ret;
     delete kernelEff;
     return false;
   }
