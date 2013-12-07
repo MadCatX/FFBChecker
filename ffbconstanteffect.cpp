@@ -39,18 +39,18 @@ bool FFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffectPar
     return false;
 
   if (GlobalSettings::GS()->doSanityChecks) {
-    if (!checkBoundsInclusive(params->attackLength, 0, 0xFFFF)){
+    if (!checkBoundsInclusive(params->attackLength, 0, 0x7FFF)){
       reportError("Attack length out of bounds");
       return false;
     }
-    if (!checkBoundsInclusive(params->attackLevel, 0, 0xFFFF)) {
+    if (!checkBoundsInclusive(params->attackLevel, 0, 0x7FFF)) {
       reportError("Attack level out of bounds");
       return false;
-    } if (!checkBoundsInclusive(params->fadeLength, 0, 0xFFFF)) {
+    } if (!checkBoundsInclusive(params->fadeLength, 0, 0x7FFF)) {
       reportError("Fade length out of bounds");
       return false;
     }
-    if (!checkBoundsInclusive(params->fadeLevel, 0, 0xFFFF)) {
+    if (!checkBoundsInclusive(params->fadeLevel, 0, 0x7FFF)) {
       reportError("Fade level out of bounds");
       return false;
     }

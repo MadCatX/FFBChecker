@@ -37,12 +37,12 @@ bool FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParameters
     return false;
   }
 
-  if (!checkBoundsInclusive(params->replayDelay, 0, 0xFFFF)) {
+  if (!checkBoundsInclusive(params->replayDelay, 0, 0x7FFF)) {
     reportError("Replay delay out of bounds.");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->replayLength, 0, 0xFFFF)) {
+  if (!checkBoundsInclusive(params->replayLength, 0, 0x7FFF)) {
     reportError("Replay length out of bounds.");
     return false;
   }
