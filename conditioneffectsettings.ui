@@ -152,7 +152,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="leftSatX">
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -229,7 +229,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="rightSatX">
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -300,7 +300,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="leftCoeffX">
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -371,7 +371,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="rightCoeffX">
         <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -442,7 +442,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="deadbandX">
         <layout class="QVBoxLayout" name="verticalLayout_10">

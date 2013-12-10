@@ -8,6 +8,7 @@ ConditionEffectSettings::ConditionEffectSettings(QWidget* parent) :
 {
   ui->setupUi(this);
   connect(ui->cbox_axis, SIGNAL(currentIndexChanged(int)), this, SLOT(axisChanged(const int)));
+  axisChanged(ui->cbox_axis->currentIndex());
 }
 
 void ConditionEffectSettings::axisChanged(const int idx)
@@ -45,13 +46,14 @@ bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBCondit
   ui->qle_leftCoeffX->setText(QString::number(cdParams->leftCoeff[FFBConditionEffectParameters::Axis::X]));
   ui->qle_rightCoeffX->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::X]));
   ui->qle_leftSatX->setText(QString::number(cdParams->leftSat[FFBConditionEffectParameters::Axis::X]));
-  ui->qle_rightSatX->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::X]));
+  ui->qle_rightSatX->setText(QString::number(cdParams->rightSat[FFBConditionEffectParameters::Axis::X]));
+
   ui->qle_centerY->setText(QString::number(cdParams->center[FFBConditionEffectParameters::Axis::Y]));
   ui->qle_deadbandY->setText(QString::number(cdParams->deadband[FFBConditionEffectParameters::Axis::Y]));
   ui->qle_leftCoeffY->setText(QString::number(cdParams->leftCoeff[FFBConditionEffectParameters::Axis::Y]));
   ui->qle_rightCoeffY->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::Y]));
   ui->qle_leftSatY->setText(QString::number(cdParams->leftSat[FFBConditionEffectParameters::Axis::Y]));
-  ui->qle_rightSatY->setText(QString::number(cdParams->rightCoeff[FFBConditionEffectParameters::Axis::Y]));
+  ui->qle_rightSatY->setText(QString::number(cdParams->rightSat[FFBConditionEffectParameters::Axis::Y]));
   return true;
 }
 

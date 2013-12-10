@@ -49,7 +49,6 @@ bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBConditionEffectParameters>(params));
-    //return setParameters(cdParams);
   } catch (const std::bad_cast& ex) {
     qCritical(ex.what());
     return false;

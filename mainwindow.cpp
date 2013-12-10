@@ -254,6 +254,7 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
       std::shared_ptr<FFBConditionEffectParameters> iParams = std::shared_ptr<FFBConditionEffectParameters>(new FFBConditionEffectParameters);
       if (!readGeneralEffectParameters(iParams))
         return false;
+
       if (!iParams->centerFromString(m_conditionEffSet->centerX(), FFBConditionEffectParameters::Axis::X)) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Center\"");
         return false;
