@@ -128,11 +128,6 @@ bool FFBPeriodicEffect::operator==(const FFBEffect& other) const
   }
 }
 
-bool FFBPeriodicEffect::operator!=(const FFBEffect& other) const
-{
-  return !(*this == other);
-}
-
 FFBPeriodicEffect::~FFBPeriodicEffect()
 {
 }

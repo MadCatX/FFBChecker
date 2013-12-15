@@ -14,7 +14,6 @@ public:
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
   bool setParameters(const std::shared_ptr<FFBPeriodicEffectParameters> params);
   bool operator==(const FFBEffect& other) const;
-  bool operator!=(const FFBEffect& other) const;
 
 private:
   std::shared_ptr<FFBPeriodicEffectParameters> m_params;

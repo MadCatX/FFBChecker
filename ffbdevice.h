@@ -40,7 +40,6 @@ public:
   inline PeriodicWaveforms waveformByIdx(const int idx) const { return m_availablePeriodicWaveforms[idx]; }
 
 private:
-  bool isEffectUpdateable(const std::shared_ptr<FFBEffect> effect, const std::shared_ptr<FFBEffectParameters> params, const FFBEffectTypes type);
   bool removeEffect(const int idx);
   int uploadEffect(struct ff_effect* effect);
   std::vector<ConditionSubtypes> m_availableConditionSubtypes;

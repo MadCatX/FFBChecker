@@ -110,24 +110,6 @@ unsigned int FFBDevice::effectTypeToIdx(FFBEffectTypes type)
   return 0;
 }
 
-bool FFBDevice::isEffectUpdateable(const std::shared_ptr<FFBEffect> effect, const std::shared_ptr<FFBEffectParameters> params, const FFBEffectTypes type)
-{
-  if (effect->type() != type)
-    return false;
-  if (type == FFBEffectTypes::PERIODIC) {
-    const std::shared_ptr<FFBPeriodicEffectParameters> pParams;
-    try {
-      PeriodicWaveforms waveform = std::dynamic_pointer_cast<FFBPeriodicEffectParameters>(effect->parameters())->waveform;
-      if (waveform != std::dynamic_pointer_cast<FFBPeriodicEffectParameters>(params)->waveform)
-        return false;
-    } catch (std::bad_cast& ex) {
-      qDebug() << ex.what();
-      return false;
-    }
-  }
-  return true;
-}
-
 QString FFBDevice::waveformName(const PeriodicWaveforms waveform) const
 {
   switch (waveform) {
@@ -241,6 +223,16 @@ bool FFBDevice::removeEffect(const int idx)
 
 bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params)
 {
+  std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
+  if (effect == nullptr) {
+    qDebug() << "Unable to create effect";
+    return false;
+  }
+  if (!effect->setParameters(params)) {
+    qDebug() << "Unable to set effect parameters, some values are probably invalid.";
+    return false;
+  }
+
   if (idx < 0 || idx > c_maxEffectCount) {
     qCritical() << "Effect index out of bounds";
     return false;
@@ -248,30 +240,17 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
 
   /* There is no effect in the selected slot */
   if (m_effects[idx]->type() == FFBEffectTypes::NONE) {
-    std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
-    if (effect == nullptr) {
-      qWarning() << "Unable to create FFBEffect";
-      return false;
-    }
-    m_effects[idx] = effect;
     qDebug() << "Creating new effect";
   } else {
-    if (!isEffectUpdateable(m_effects[idx], params, type)) {
+    if (*m_effects[idx] != *effect) {
       removeEffect(idx);
-      m_effects[idx] = FFBEffectFactory::createEffect(type);
-      if (m_effects[idx] == nullptr) {
-        qDebug() << "Effect was not recreated.";
-        return false;
-      }
       qDebug() << "Recreating effect" << idx;
-    } else
+    } else {
+      effect->setInternalIdx(m_effects[idx]->internalIdx());
       qDebug() << "Updating effect" << idx;
+    }
   }
-
-  if (!m_effects[idx]->setParameters(params)) {
-    qDebug() << "Unable to set effect parameters, some values are probably invalid.";
-    return false;
-  }
+  m_effects[idx] = effect;
 
   struct ff_effect* kernelEff = nullptr;
   kernelEff = m_effects[idx]->createFFStruct();
@@ -280,6 +259,7 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
     qDebug() << "struct ff_effect not created";
     return false;
   }
+
   int ret = uploadEffect(kernelEff);
   if (ret < 0) {
     QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
@@ -290,6 +270,8 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
 
   m_effects[idx]->setInternalIdx(kernelEff->id);
   m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::STOPPED);
+
+  qDebug() << "idx" << "internal idx" << kernelEff->id;
 
   /* Start playback */
   struct input_event evt;

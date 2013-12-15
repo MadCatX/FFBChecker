@@ -125,3 +125,17 @@ bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectP
   m_params = params;
   return true;
 }
+
+bool FFBConditionEffect::operator==(const FFBEffect& other) const
+{
+  if (this->type() != other.type())
+    return false;
+  else {
+    try {
+      const FFBConditionEffect& cother = dynamic_cast<const FFBConditionEffect&>(other);
+      return this->m_params->subtype == cother.m_params->subtype;
+    } catch (std::bad_cast&) {
+      return false;
+    }
+  }
+}
