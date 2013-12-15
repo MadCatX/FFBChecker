@@ -271,8 +271,6 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
   m_effects[idx]->setInternalIdx(kernelEff->id);
   m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::STOPPED);
 
-  qDebug() << "idx" << "internal idx" << kernelEff->id;
-
   /* Start playback */
   struct input_event evt;
   evt.type = EV_FF;
