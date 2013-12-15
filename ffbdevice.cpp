@@ -223,7 +223,7 @@ bool FFBDevice::removeEffect(const int idx)
 
 bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params)
 {
-  bool update = false;
+  bool dontStart = false;
   std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
   if (effect == nullptr) {
     qDebug() << "Unable to create effect";
@@ -248,7 +248,8 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
       qDebug() << "Recreating effect" << idx;
     } else {
       effect->setInternalIdx(m_effects[idx]->internalIdx());
-      update = true;
+      if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::PLAYING)
+        dontStart = true;
       qDebug() << "Updating effect" << idx;
     }
   }
@@ -269,7 +270,7 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
     delete kernelEff;
     return false;
   }
-  if (update)
+  if (dontStart)
     return true;
 
   m_effects[idx]->setInternalIdx(kernelEff->id);
