@@ -248,8 +248,10 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
       qDebug() << "Recreating effect" << idx;
     } else {
       effect->setInternalIdx(m_effects[idx]->internalIdx());
-      if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::PLAYING)
+      effect->setStatus(m_effects[idx]->status());
+      if (effect->status() == FFBEffect::FFBEffectStatus::PLAYING) {
         dontStart = true;
+      }
       qDebug() << "Updating effect" << idx;
     }
   }
