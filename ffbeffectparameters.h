@@ -12,10 +12,12 @@ public:
   virtual ~FFBEffectParameters();
 
   bool directionFromString(const QString& direction);
+  bool repeatFromString(const QString& repeat);
   bool replayDelayFromString(const QString& replayDelay);
   bool replayLengthFromString(const QString& replayLength);
 
   int direction;
+  int repeat;
   int replayDelay;
   int replayLength;
 };

@@ -265,6 +265,8 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
     return false;
   }
 
+  qDebug() << kernelEff->u.condition[0].center << kernelEff->u.condition[0].deadband << kernelEff->u.condition[1].center << kernelEff->u.condition[1].deadband;
+
   int ret = uploadEffect(kernelEff);
   if (ret < 0) {
     QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
@@ -282,7 +284,7 @@ bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<
   struct input_event evt;
   evt.type = EV_FF;
   evt.code = kernelEff->id;
-  evt.value = 1;
+  evt.value = m_effects[idx]->parameters()->repeat;
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {

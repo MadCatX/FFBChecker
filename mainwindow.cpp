@@ -343,6 +343,10 @@ bool MainWindow::readGeneralEffectParameters(std::shared_ptr<FFBEffectParameters
     QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"direction\"");
     return false;
   }
+  if (!params->repeatFromString(ui->qle_repeat->text())) {
+    QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Replay\"");
+    return false;
+  }
   if (!params->replayDelayFromString(ui->qle_replayDelay->text())) {
     QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Replay delay\"");
     return false;

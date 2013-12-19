@@ -32,6 +32,11 @@ bool FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParameters
   if (!GlobalSettings::GS()->doSanityChecks)
     return true;
 
+  if (params->repeat < 1) {
+    reportError("Effect must be played back at least once.");
+    return false;
+  }
+
   if (!checkBoundsInclusive(params->direction, 0, 0xFFFF)) {
     reportError("Direction out of bounds.");
     return false;
