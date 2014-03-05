@@ -3,7 +3,7 @@
 
 #include "effectsettings.h"
 #include "envelopesettings.h"
-#include"ffbrampeffectparameters.h"
+#include "ffbrampeffectparameters.h"
 
 namespace Ui {
   class RampEffectSettings;

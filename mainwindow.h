@@ -8,8 +8,10 @@
 #include "ffbdevice.h"
 #include "ffbperiodiceffectparameters.h"
 #include "ffbrampeffectparameters.h"
+#include "ffbrumbleeffectparameters.h"
 #include "periodiceffectsettings.h"
 #include "rampeffectsettings.h"
+#include "rumbleeffectsettings.h"
 #include <memory>
 #include <QMainWindow>
 
@@ -40,6 +42,7 @@ private:
   ConstantEffectSettings* m_constantEffSet;
   PeriodicEffectSettings* m_periodicEffSet;
   RampEffectSettings* m_rampEffSet;
+  RumbleEffectSettings* m_rumbleEffSet;
   std::shared_ptr<DeviceProber> m_prober;
   Ui::MainWindow* ui;
 

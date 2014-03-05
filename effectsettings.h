@@ -8,7 +8,7 @@ class EffectSettings : public QWidget
 {
   Q_OBJECT
 public:
-  explicit EffectSettings(QWidget* parent = 0);
+  explicit EffectSettings(QWidget* parent = nullptr);
   virtual bool fillFromParameters(const std::shared_ptr<FFBEffectParameters> params) = 0;
 
 signals:

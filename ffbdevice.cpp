@@ -161,6 +161,8 @@ bool FFBDevice::queryDeviceCapabilities()
   if (testBit(FF_SPRING, caps) || testBit(FF_FRICTION, caps) ||
       testBit(FF_DAMPER, caps) || testBit(FF_INERTIA, caps))
     m_availableEffects.push_back(FFBEffectTypes::CONDITION);
+  if (testBit(FF_RUMBLE, caps))
+    m_availableEffects.push_back(FFBEffectTypes::RUMBLE);
 
   /* Query waveforms for PERIODIC if the device supports it */
   if (hasEffect(FFBEffectTypes::PERIODIC)) {

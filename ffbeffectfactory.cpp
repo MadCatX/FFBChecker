@@ -17,6 +17,8 @@ std::shared_ptr<FFBEffect> FFBEffectFactory::createEffect(FFBEffectTypes type)
       return std::shared_ptr<FFBEffect>(new FFBConditionEffect());
     case FFBEffectTypes::RAMP:
       return std::shared_ptr<FFBEffect>(new FFBRampEffect());
+    case FFBEffectTypes::RUMBLE:
+      return std::shared_ptr<FFBEffect>(new FFBRumbleEffect());
     default:
       return nullptr;
   }

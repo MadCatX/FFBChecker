@@ -7,6 +7,7 @@
 #include "ffbnulleffect.h"
 #include "ffbperiodiceffect.h"
 #include "ffbrampeffect.h"
+#include "ffbrumbleeffect.h"
 
 class FFBEffectFactory
 {

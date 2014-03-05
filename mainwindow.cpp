@@ -22,10 +22,12 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   m_periodicEffSet = new PeriodicEffectSettings();
   m_conditionEffSet = new ConditionEffectSettings();
   m_rampEffSet = new RampEffectSettings();
+  m_rumbleEffSet = new RumbleEffectSettings();
   ui->qstw_effectSpecifics->addWidget(m_conditionEffSet);
   ui->qstw_effectSpecifics->addWidget(m_constantEffSet);
   ui->qstw_effectSpecifics->addWidget(m_periodicEffSet);
   ui->qstw_effectSpecifics->addWidget(m_rampEffSet);
+  ui->qstw_effectSpecifics->addWidget(m_rumbleEffSet);
 
   if (GlobalSettings::GS()->doSanityChecks)
     ui->ql_noChecksWarning->setHidden(true);
@@ -51,6 +53,8 @@ EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
       return m_conditionEffSet;
     case FFBEffectTypes::RAMP:
       return m_rampEffSet;
+    case FFBEffectTypes::RUMBLE:
+      return m_rumbleEffSet;
     default:
       abort();
   }
@@ -323,6 +327,23 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
       }
       if (!iParams->startLevelFromString(m_rampEffSet->startLevel())) {
         QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Start level\"");
+        return false;
+      }
+
+      params = iParams;
+      break;
+    }
+    case FFBEffectTypes::RUMBLE: {
+      std::shared_ptr<FFBRumbleEffectParameters> iParams(new FFBRumbleEffectParameters());
+      if (!readGeneralEffectParameters(iParams))
+        return false;
+
+      if (!iParams->strongMagnitudeFromString(m_rumbleEffSet->strongMagnitude())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Strong magnitude\"");
+        return false;
+      }
+      if (!iParams->weakMagnitudeFromString(m_rumbleEffSet->weakMagnitude())) {
+        QMessageBox::warning(this, res_inputFormatErrCap, "Invalid data in field \"Weak magnitude\"");
         return false;
       }
 

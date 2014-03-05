@@ -35,7 +35,10 @@ SOURCES += main.cpp\
     rampeffectsettings.cpp \
     ffbrampeffectparameters.cpp \
     ffbrampeffect.cpp \
-    globalsettings.cpp
+    globalsettings.cpp \
+    rumbleeffectsettings.cpp \
+    ffbrumbleeffectparameters.cpp \
+    ffbrumbleeffect.cpp
 
 HEADERS  += mainwindow.h \
     deviceprober.h \
@@ -61,14 +64,18 @@ HEADERS  += mainwindow.h \
     rampeffectsettings.h \
     ffbrampeffectparameters.h \
     ffbrampeffect.h \
-    globalsettings.h
+    globalsettings.h \
+    rumbleeffectsettings.h \
+    ffbrumbleeffectparameters.h \
+    ffbrumbleeffect.h
 
 FORMS    += mainwindow.ui \
     constanteffectsettings.ui \
     envelopesettings.ui \
     periodiceffectsettings.ui \
     conditioneffectsettings.ui \
-    rampeffectsettings.ui
+    rampeffectsettings.ui \
+    rumbleeffectsettings.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall
 QMAKE_CXXFLAGS_DEBUG += -ggdb3
