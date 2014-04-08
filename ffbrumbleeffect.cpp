@@ -32,12 +32,12 @@ bool FFBRumbleEffect::setParameters(const std::shared_ptr<FFBRumbleEffectParamet
   if (!checkGenericParameters(params))
     return false;
 
-  if (!checkBoundsInclusive(params->strongMagnitude, static_cast<quint16>(0), static_cast<quint16>(0xFFFF))) {
+  if (!checkBoundsInclusive(params->strongMagnitude, 0, 0xFFFF)) {
     reportError("Strong magnitude out of bounds");
     return false;
   }
 
-  if (!checkBoundsInclusive(params->weakMagnitude, static_cast<quint16>(0), static_cast<quint16>(0xFFFF))) {
+  if (!checkBoundsInclusive(params->weakMagnitude, 0, 0xFFFF)) {
     reportError("Weak magnitude out of bounds");
     return false;
   }

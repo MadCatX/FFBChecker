@@ -10,11 +10,11 @@ public:
   bool strongMagnitudeFromString(const QString& strong);
   bool weakMagnitudeFromString(const QString& weak);
 
-  quint16 strongMagnitude;
-  quint16 weakMagnitude;
+  int strongMagnitude;
+  int weakMagnitude;
 
 private:
-  bool magnitudeFromString(const QString& str, quint16& val);
+  bool magnitudeFromString(const QString& str, int& val);
 };
 
 #endif // FFBRUMBLEEFFECTPARAMETERS_H

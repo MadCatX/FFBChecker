@@ -14,7 +14,7 @@ bool FFBRumbleEffectParameters::weakMagnitudeFromString(const QString& weak)
   return magnitudeFromString(weak, weakMagnitude);
 }
 
-bool FFBRumbleEffectParameters::magnitudeFromString(const QString& str, quint16& val)
+bool FFBRumbleEffectParameters::magnitudeFromString(const QString& str, int& val)
 {
   bool ok;
   val = str.toInt(&ok);
