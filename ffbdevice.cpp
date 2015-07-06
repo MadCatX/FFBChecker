@@ -5,11 +5,11 @@
 
 const quint8 FFBDevice::BITS_PER_LONG = sizeof(unsigned long) * 8;
 
-FFBDevice::FFBDevice(const int fd, const QString& id, const int maxEffectCount, QObject* parent) :
+FFBDevice::FFBDevice(const int fd, const QString& path, const int maxEffectCount, QObject* parent) :
   QObject(parent),
   c_fd(fd),
-  c_id(id),
-  c_maxEffectCount(maxEffectCount)
+  c_maxEffectCount(maxEffectCount),
+  c_path(path)
 {
   for (int i = 0; i < maxEffectCount; i++)
     m_effects.push_back(FFBEffectFactory::createEffect(FFBEffectTypes::NONE));

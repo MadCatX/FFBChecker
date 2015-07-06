@@ -33,7 +33,7 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
     ui->ql_noChecksWarning->setHidden(true);
 
   fillDeviceList();
-  connect(ui->cbox_devices, SIGNAL(activated(const QString&)), this, SLOT(onDeviceSelected(const QString&)));
+  connect(ui->cbox_devices, SIGNAL(activated(const int)), this, SLOT(onDeviceSelected(const int)));
   connect(ui->cbox_effectSlots, SIGNAL(activated(const int)), this, SLOT(onEffectSlotSelected(const int)));
   connect(ui->cbox_effectTypes, SIGNAL(activated(const int)), this, SLOT(onEffectTypeSelected(const int)));
   connect(ui->qpb_refreshDevices, SIGNAL(clicked()), this, SLOT(onRefreshDevicesClicked()));
@@ -63,7 +63,9 @@ EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
 void MainWindow::fillDeviceList()
 {
   ui->cbox_devices->clear();
-  ui->cbox_devices->addItems(m_prober->listDevicesByID());
+
+  for (const DeviceProber::DeviceInfo& dinfo : m_prober->listDevices())
+    ui->cbox_devices->addItem(dinfo.tag, dinfo.path);
 }
 
 void MainWindow::fillEffectSlotsList(const int idx)
@@ -79,10 +81,11 @@ void MainWindow::fillEffectTypesList(const QStringList& list)
   ui->cbox_effectTypes->addItems(list);
 }
 
-void MainWindow::onDeviceSelected(const QString& id)
+void MainWindow::onDeviceSelected(const int idx)
 {
+  QString path = ui->cbox_devices->itemData(idx, Qt::UserRole).toString();
   ui->cbox_effectSlots->clear();
-  m_activeDevice = m_prober->openDeviceByID(id);
+  m_activeDevice = m_prober->openDevice(path);
 
   if (m_activeDevice == nullptr)
     return;

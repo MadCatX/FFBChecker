@@ -10,14 +10,20 @@ class DeviceProber : public QObject
 {
   Q_OBJECT
 public:
+  struct DeviceInfo {
+    QString path;
+    QString tag;
+  };
+  typedef QList<DeviceInfo> DeviceList;
+
   explicit DeviceProber(QObject* parent = 0);
-  QStringList listDevicesByID();
-  std::shared_ptr<FFBDevice> openDeviceByID(const QString& id);
+  DeviceList listDevices();
+  std::shared_ptr<FFBDevice> openDevice(const QString& path);
 
 private:
   std::list<std::shared_ptr<FFBDevice>> m_openedDevices;
 
-  static const QDir s_deviceNodesByID;
+  static const QString DEVICE_NODES_PATH;
   static const QString res_ffbdeviceErrCap;
 
 signals:

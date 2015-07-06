@@ -16,7 +16,7 @@ class FFBDevice : public QObject
   Q_OBJECT
 public:
 
-  explicit FFBDevice(const int fd, const QString& id, const int maxEffectCount, QObject* parent = 0);
+  explicit FFBDevice(const int fd, const QString& path, const int maxEffectCount, QObject* parent = 0);
   QStringList availableConditionSubtypesList() const;
   QStringList availableEffectsList() const;
   QStringList availableWaveformsList() const;
@@ -30,8 +30,8 @@ public:
   FFBEffectTypes effectTypeByEffectIdx(const int idx) const;
   bool hasEffect(FFBEffectTypes id) const;
   bool hasPeriodicWaveform(PeriodicWaveforms id) const;
-  inline const QString& id() const { return c_id; }
   inline int maxEffectCount() const { return c_maxEffectCount; }
+  inline const QString& path() const { return c_path; }
   bool queryDeviceCapabilities();
   bool removeAndEraseEffect(const int idx);
   bool startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params);
@@ -48,8 +48,8 @@ private:
   std::vector<std::shared_ptr<FFBEffect>> m_effects;
 
   const int c_fd;
-  const QString c_id;
   const int c_maxEffectCount;
+  const QString c_path;
 
   static inline unsigned long longIdx(unsigned long bit) { return bit / BITS_PER_LONG; }
   static inline unsigned long offset(unsigned long bit) { return bit % BITS_PER_LONG; }

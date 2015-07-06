@@ -53,7 +53,7 @@ private:
   static const QString res_inputFormatErrCap;
 
 private slots:
-  void onDeviceSelected(const QString& id);
+  void onDeviceSelected(const int idx);
   void onEffectSlotSelected(const int idx);
   void onEffectTypeSelected(const int idx);
   void onRefreshDevicesClicked();
