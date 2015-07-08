@@ -192,7 +192,7 @@ void MainWindow::onRemoveEffectClicked()
   if (!m_activeDevice->removeAndEraseEffect(effectIdx))
     showErrorMsgBox(ErrorMessages::CANT_REMOVE_EFFECT);
   else
-    setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
+    setEffectStatusText(m_activeDevice->effectStatusByIdx(effectIdx));
 }
 
 void MainWindow::onStartEffectClicked()
