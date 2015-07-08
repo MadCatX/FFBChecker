@@ -28,6 +28,11 @@ public:
   ~MainWindow();
 
 private:
+  enum class ErrorMessages { BAD_EFFECT_SLOT,
+                             CANT_REMOVE_EFFECT,
+                             CANT_START_EFFECT,
+                             CANT_UPLOAD_EFFECT };
+
   EffectSettings* effectSettingsByType(FFBEffectTypes type);
   QString effectTypeToEffectName(const FFBEffectTypes type) const;
   void fillDeviceList();
@@ -38,6 +43,7 @@ private:
   bool readGeneralEffectParameters(std::shared_ptr<FFBEffectParameters> params);
   void setEffectStatusText(const FFBEffect::FFBEffectStatus status);
   void setEffectTypeIndexByType(const FFBEffectTypes etype);
+  void showErrorMsgBox(const ErrorMessages msgCode);
 
   std::shared_ptr<FFBDevice> m_activeDevice;
   ConditionEffectSettings* m_conditionEffSet;

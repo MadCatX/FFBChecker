@@ -132,7 +132,7 @@ void MainWindow::onEffectSlotSelected(const int cboxIdx)
 
   effectIdx = ui->cbox_effectSlots->currentData(Qt::UserRole).toInt(&ok);
   if (!ok) {
-    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    showErrorMsgBox(ErrorMessages::BAD_EFFECT_SLOT);
     return;
   }
   FFBEffectTypes etype = m_activeDevice->effectTypeByEffectIdx(effectIdx);
@@ -180,7 +180,7 @@ void MainWindow::onRemoveEffectClicked()
   if (m_activeDevice == nullptr)
     return;
   if (!m_activeDevice->removeAndEraseEffect(ui->cbox_effectSlots->currentIndex()))
-    QMessageBox::warning(this, res_deviceErrorCap, "Unable to remove the effect.");
+    showErrorMsgBox(ErrorMessages::CANT_REMOVE_EFFECT);
   else
     setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
 }
@@ -197,7 +197,7 @@ void MainWindow::onStartEffectClicked()
   std::shared_ptr<FFBEffectParameters> params;
   effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
   if (!ok) {
-    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    showErrorMsgBox(ErrorMessages::BAD_EFFECT_SLOT);
     return;
   }
 
@@ -209,7 +209,7 @@ void MainWindow::onStartEffectClicked()
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
   else
-    QMessageBox::warning(this, res_deviceErrorCap, "Unable to start the effect.");
+    showErrorMsgBox(ErrorMessages::CANT_START_EFFECT);
 }
 
 void MainWindow::onStopEffectClicked()
@@ -222,7 +222,7 @@ void MainWindow::onStopEffectClicked()
 
   effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
   if (!ok) {
-    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    showErrorMsgBox(ErrorMessages::BAD_EFFECT_SLOT);
     return;
   }
   m_activeDevice->stopEffect(effectSlot);
@@ -241,7 +241,7 @@ void MainWindow::onUploadEffectClicked()
   std::shared_ptr<FFBEffectParameters> params;
   effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
   if (!ok) {
-    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    showErrorMsgBox(ErrorMessages::BAD_EFFECT_SLOT);
     return;
   }
 
@@ -253,7 +253,7 @@ void MainWindow::onUploadEffectClicked()
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
   else
-    QMessageBox::warning(this, res_deviceErrorCap, "Unable to upload the effect.");
+    showErrorMsgBox(ErrorMessages::CANT_UPLOAD_EFFECT);
 }
 
 bool MainWindow::readEnvelopeParameters(std::shared_ptr<FFBEnvelopeParameters> params, const EnvelopeSettings* es)
@@ -482,6 +482,25 @@ void MainWindow::setEffectTypeIndexByType(const FFBEffectTypes etype)
     }
   }
 }
+
+void MainWindow::showErrorMsgBox(const ErrorMessages msgCode)
+{
+  switch (msgCode) {
+  case ErrorMessages::BAD_EFFECT_SLOT:
+    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    break;
+  case ErrorMessages::CANT_REMOVE_EFFECT:
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to remove the effect.");
+    break;
+  case ErrorMessages::CANT_START_EFFECT:
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to start the effect.");
+    break;
+  case ErrorMessages::CANT_UPLOAD_EFFECT:
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to upload effect.");
+    break;
+  }
+}
+
 
 MainWindow::~MainWindow()
 {
