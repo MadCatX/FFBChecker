@@ -3,6 +3,8 @@
 #include <QtWidgets/QMessageBox>
 #include <QDebug>
 
+#define CHECK_EFFECT_IDX(idx) if (idx < 0 || idx > c_maxEffectCount) return false
+
 const quint8 FFBDevice::BITS_PER_LONG = sizeof(unsigned long) * 8;
 
 FFBDevice::FFBDevice(const int fd, const QString& path, const int maxEffectCount, QObject* parent) :
@@ -223,87 +225,44 @@ bool FFBDevice::removeEffect(const int idx)
   return true;
 }
 
-bool FFBDevice::startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params)
+bool FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
-  bool dontStart = false;
-  std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
-  if (effect == nullptr) {
-    qDebug() << "Unable to create effect";
-    return false;
-  }
-  if (!effect->setParameters(params)) {
-    qDebug() << "Unable to set effect parameters, some values are probably invalid.";
-    return false;
-  }
+  int ret;
+  std::shared_ptr<FFBEffect> effect;
 
-  if (idx < 0 || idx > c_maxEffectCount) {
-    qCritical() << "Effect index out of bounds";
-    return false;
-  }
+  CHECK_EFFECT_IDX(idx);
 
-  /* There is no effect in the selected slot */
-  if (m_effects[idx]->type() == FFBEffectTypes::NONE) {
-    qDebug() << "Creating new effect";
-  } else {
-    if (*m_effects[idx] != *effect) {
-      removeEffect(idx);
-      qDebug() << "Recreating effect" << idx;
-    } else {
-      effect->setInternalIdx(m_effects[idx]->internalIdx());
-      effect->setStatus(m_effects[idx]->status());
-      if (effect->status() == FFBEffect::FFBEffectStatus::PLAYING) {
-        dontStart = true;
-      }
-      qDebug() << "Updating effect" << idx;
-    }
-  }
-  m_effects[idx] = effect;
+  effect = m_effects[idx];
 
-  struct ff_effect* kernelEff = nullptr;
-  kernelEff = m_effects[idx]->createFFStruct();
-  if (kernelEff == nullptr) {
-    QMessageBox::critical(nullptr, "FFB Device", "ff_effect struct could not have been created. Effect not uploaded.");
-    qDebug() << "struct ff_effect not created";
-    return false;
+  if (effect->status() == FFBEffect::FFBEffectStatus::NOT_LOADED) {
+    if (!uploadEffect(idx, type, parameters))
+      return false;
   }
-
-  qDebug() << kernelEff->u.condition[0].center << kernelEff->u.condition[0].deadband << kernelEff->u.condition[1].center << kernelEff->u.condition[1].deadband;
-
-  int ret = uploadEffect(kernelEff);
-  if (ret < 0) {
-    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
-    qDebug() << "Effect not uploaded" << ret;
-    delete kernelEff;
-    return false;
-  }
-  if (dontStart)
+  if (effect->status() == FFBEffect::FFBEffectStatus::PLAYING)
     return true;
-
-  m_effects[idx]->setInternalIdx(kernelEff->id);
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::STOPPED);
 
   /* Start playback */
   struct input_event evt;
   evt.type = EV_FF;
-  evt.code = kernelEff->id;
-  evt.value = m_effects[idx]->parameters()->repeat;
+  evt.code = effect->internalIdx();
+  evt.value = effect->parameters()->repeat;
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {
     QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been started, error code: " + QString::number(ret));
     qDebug() << "Effect not started" << ret;
-    delete kernelEff;
     return false;
   }
 
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
+  effect->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
 
-  delete kernelEff;
   return true;
 }
 
 bool FFBDevice::stopEffect(const int idx)
 {
+  CHECK_EFFECT_IDX(idx);
+
   if (m_effects[idx] == nullptr)
     return true;
 
@@ -321,17 +280,70 @@ bool FFBDevice::stopEffect(const int idx)
   if (ret != sizeof(struct input_event))
     return false;
 
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::STOPPED);
+  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
   return true;
 }
 
-int FFBDevice::uploadEffect(struct ff_effect* effect)
+bool FFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
-  int ret = ioctl(c_fd, EVIOCSFF, effect);
-  if (ret < 0) {
-    qDebug() << "Error while uploading effect";
-    return ret;
+  struct ff_effect* kernelEff = nullptr;
+  std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
+
+  CHECK_EFFECT_IDX(idx);
+
+  if (effect == nullptr) {
+    qDebug() << "Unable to create effect";
+    return false;
+  }
+  if (!effect->setParameters(parameters)) {
+    qDebug() << "Unable to set effect parameters, some values are probably invalid.";
+    return false;
   }
 
-  return effect->id;
+  if (idx < 0 || idx > c_maxEffectCount) {
+    qCritical() << "Effect index out of bounds";
+    return false;
+  }
+
+  /* There is no effect in the selected slot */
+  if (m_effects[idx]->type() == FFBEffectTypes::NONE) {
+    effect->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+    qDebug() << "Creating new effect";
+  } else {
+    if (*m_effects[idx] != *effect) {
+      if (!removeEffect(idx)) {
+        QMessageBox::critical(nullptr, "FFB Device", "Unable to remove effect");
+        return false;
+      }
+      effect->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+      qDebug() << "Recreating effect" << idx;
+    } else {
+      effect->setInternalIdx(m_effects[idx]->internalIdx());
+      effect->setStatus(m_effects[idx]->status());
+      qDebug() << "Updating effect" << idx;
+    }
+  }
+
+  kernelEff = effect->createFFStruct();
+  if (kernelEff == nullptr) {
+    QMessageBox::critical(nullptr, "FFB Device", "ff_effect struct could not have been created. Effect not uploaded.");
+    qDebug() << "struct ff_effect not created";
+    return false;
+  }
+
+  qDebug() << kernelEff->u.condition[0].center << kernelEff->u.condition[0].deadband << kernelEff->u.condition[1].center << kernelEff->u.condition[1].deadband;
+
+  int ret = ioctl(c_fd, EVIOCSFF, kernelEff);
+  if (ret < 0) {
+    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
+    qDebug() << "Effect not uploaded" << ret;
+    delete kernelEff;
+    return false;
+  }
+
+  effect->setInternalIdx(kernelEff->id);
+  delete kernelEff;
+
+  m_effects[idx] = effect;
+  return true;
 }

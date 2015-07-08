@@ -34,14 +34,14 @@ public:
   inline const QString& path() const { return c_path; }
   bool queryDeviceCapabilities();
   bool removeAndEraseEffect(const int idx);
-  bool startEffect(const int idx, FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> params);
+  bool startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
   bool stopEffect(const int idx);
+  bool uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
   QString waveformName(const PeriodicWaveforms waveform) const;
   inline PeriodicWaveforms waveformByIdx(const int idx) const { return m_availablePeriodicWaveforms[idx]; }
 
 private:
   bool removeEffect(const int idx);
-  int uploadEffect(struct ff_effect* effect);
   std::vector<ConditionSubtypes> m_availableConditionSubtypes;
   std::vector<FFBEffectTypes> m_availableEffects;
   std::vector<PeriodicWaveforms> m_availablePeriodicWaveforms;

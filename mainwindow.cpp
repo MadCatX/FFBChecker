@@ -7,7 +7,7 @@
 const QString MainWindow::res_deviceErrorCap("Device error");
 const QString MainWindow::res_effectNotLoaded("Not loaded");
 const QString MainWindow::res_effectPlaying("Playing");
-const QString MainWindow::res_effectStopped("Stopped");
+const QString MainWindow::res_effectUploaded("Uploaded");
 const QString MainWindow::res_inputFormatErrCap("Invalid input format.");
 
 MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& title, QWidget* parent) :
@@ -40,6 +40,7 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   connect(ui->qpb_remove, SIGNAL(clicked()), this, SLOT(onRemoveEffectClicked()));
   connect(ui->qpb_start, SIGNAL(clicked()), this, SLOT(onStartEffectClicked()));
   connect(ui->qpb_stop, SIGNAL(clicked()), this, SLOT(onStopEffectClicked()));
+  connect(ui->qpb_upload, SIGNAL(clicked()), this, SLOT(onUploadEffectClicked()));
 }
 
 EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
@@ -180,6 +181,26 @@ void MainWindow::onStopEffectClicked()
   int effectSlot = ui->cbox_effectSlots->currentIndex();
   m_activeDevice->stopEffect(effectSlot);
   setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
+}
+
+void MainWindow::onUploadEffectClicked()
+{
+  if (m_activeDevice == nullptr)
+    return;
+
+  FFBEffectTypes type = m_activeDevice->effectTypeFromSelectionIdx(ui->cbox_effectTypes->currentIndex());
+  std::shared_ptr<FFBEffectParameters> params;
+  int effectSlot = ui->cbox_effectSlots->currentIndex();
+
+  if (!readEffectParameters(params, type)) {
+    qDebug() << "Cannot read effect params.";
+    return;
+  }
+  bool ret = m_activeDevice->uploadEffect(effectSlot, type, params);
+  if (ret)
+    setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
+  else
+    QMessageBox::warning(this, res_deviceErrorCap, "Unable to upload the effect.");
 }
 
 bool MainWindow::readEnvelopeParameters(std::shared_ptr<FFBEnvelopeParameters> params, const EnvelopeSettings* es)
@@ -392,8 +413,8 @@ void MainWindow::setEffectStatusText(const FFBEffect::FFBEffectStatus status)
     case FFBEffect::FFBEffectStatus::PLAYING:
       ui->ql_effectStatus->setText(res_effectPlaying);
       break;
-    case FFBEffect::FFBEffectStatus::STOPPED:
-      ui->ql_effectStatus->setText(res_effectStopped);
+    case FFBEffect::FFBEffectStatus::UPLOADED:
+      ui->ql_effectStatus->setText(res_effectUploaded);
       break;
     }
 }

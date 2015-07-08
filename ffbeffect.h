@@ -8,7 +8,7 @@
 
 class FFBEffect {
 public:
-  enum class FFBEffectStatus { PLAYING, STOPPED, NOT_LOADED };
+  enum class FFBEffectStatus { PLAYING, UPLOADED, NOT_LOADED };
 
   explicit FFBEffect(FFBEffectTypes type);
   virtual struct ff_effect* createFFStruct() = 0;

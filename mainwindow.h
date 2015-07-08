@@ -49,7 +49,7 @@ private:
   static const QString res_deviceErrorCap;
   static const QString res_effectNotLoaded;
   static const QString res_effectPlaying;
-  static const QString res_effectStopped;
+  static const QString res_effectUploaded;
   static const QString res_inputFormatErrCap;
 
 private slots:
@@ -60,6 +60,7 @@ private slots:
   void onRemoveEffectClicked();
   void onStartEffectClicked();
   void onStopEffectClicked();
+  void onUploadEffectClicked();
 };
 
 #endif // MAINWINDOW_H
