@@ -3,8 +3,8 @@
 
 #define APP_NAME "FFBChecker"
 static const int APP_VERSION_MAJOR(0);
-static const int APP_VERSION_MINOR(3);
-static const char APP_VERSION_REL('b');
+static const int APP_VERSION_MINOR(4);
+static const char APP_VERSION_REL('a');
 
 enum class FFBEffectTypes { NONE, CONSTANT, PERIODIC, RAMP, CONDITION, RUMBLE };
 enum class PeriodicWaveforms { NONE, SQUARE, TRIANGLE, SINE, SAW_UP, SAW_DOWN };
