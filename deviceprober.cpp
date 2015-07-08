@@ -18,13 +18,14 @@ DeviceProber::DeviceProber(QObject* parent) :
 DeviceProber::DeviceList DeviceProber::listDevices()
 {
   DeviceProber::DeviceList list;
+  char deviceName[64];
   QDir devDir(DEVICE_NODES_PATH);
   //QStringList devices = DeviceProber::s_deviceNodesPath.entryList(QDir::NoDotAndDotDot);
   QStringList devices = devDir.entryList(QDir::System);
 
+  deviceName[63] = '\0';
   for (const QString& d : devices) {
     int fd, ret;
-    char deviceName[64];
     DeviceInfo dinfo;
     QString devicePath = devDir.absoluteFilePath(d);
 
@@ -35,7 +36,7 @@ DeviceProber::DeviceList DeviceProber::listDevices()
     }
 
     dinfo.path = devicePath;
-    ret = ioctl(fd, EVIOCGNAME(64), deviceName);
+    ret = ioctl(fd, EVIOCGNAME(63), deviceName);
     if (ret < 0)
       qDebug() << "Cannot get name of device" << d << strerror(errno);
     else
