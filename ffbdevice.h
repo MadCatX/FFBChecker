@@ -17,16 +17,11 @@ class FFBDevice : public QObject
 public:
 
   explicit FFBDevice(const int fd, const QString& path, const int maxEffectCount, QObject* parent = 0);
-  QStringList availableConditionSubtypesList() const;
-  QStringList availableEffectsList() const;
-  QStringList availableWaveformsList() const;
-  inline ConditionSubtypes conditionSubtypeByIdx(const int idx) { return m_availableConditionSubtypes[idx]; }
-  QString conditionSubtypeName(const ConditionSubtypes subtype) const;
-  QString effectName(const FFBEffectTypes effect) const;
+  const std::vector<ConditionSubtypes>& availableConditionSubtypesList() const;
+  const std::vector<FFBEffectTypes>& availableEffectsList() const;
+  const std::vector<PeriodicWaveforms>& availableWaveformsList() const;
   const std::shared_ptr<FFBEffectParameters> effectParameters(const int idx);
   FFBEffect::FFBEffectStatus effectStatusByIdx(const int idx) const;
-  inline FFBEffectTypes effectTypeFromSelectionIdx(const int idx) const { return m_availableEffects[idx]; }
-  unsigned int effectTypeToIdx(FFBEffectTypes type);
   FFBEffectTypes effectTypeByEffectIdx(const int idx) const;
   bool hasEffect(FFBEffectTypes id) const;
   bool hasPeriodicWaveform(PeriodicWaveforms id) const;
@@ -37,7 +32,6 @@ public:
   bool startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
   bool stopEffect(const int idx);
   bool uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
-  QString waveformName(const PeriodicWaveforms waveform) const;
   inline PeriodicWaveforms waveformByIdx(const int idx) const { return m_availablePeriodicWaveforms[idx]; }
 
 private:

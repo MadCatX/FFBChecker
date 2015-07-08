@@ -13,10 +13,11 @@ const EnvelopeSettings* PeriodicEffectSettings::envelopeSettings() const
   return ui->qwid_envelope;
 }
 
-void PeriodicEffectSettings::fillAvailableWaveformsList(const QStringList& list)
+void PeriodicEffectSettings::fillAvailableWaveformsList(const std::vector<PeriodicWaveforms>& list)
 {
   ui->cbox_waveform->clear();
-  ui->cbox_waveform->addItems(list);
+  for (const PeriodicWaveforms waveform : list)
+    ui->cbox_waveform->addItem(waveformTypeToWaveformName(waveform), static_cast<std::underlying_type<PeriodicWaveforms>::type>(waveform));
 }
 
 bool PeriodicEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectParameters> params)
@@ -54,6 +55,24 @@ QString PeriodicEffectSettings::period() const
 QString PeriodicEffectSettings::phase() const
 {
   return ui->qle_phase->text();
+}
+
+QString PeriodicEffectSettings::waveformTypeToWaveformName(const PeriodicWaveforms waveform) const
+{
+  switch (waveform) {
+    case PeriodicWaveforms::SQUARE:
+      return "Square";
+    case PeriodicWaveforms::TRIANGLE:
+      return "Triangle";
+    case PeriodicWaveforms::SINE:
+      return "Sine";
+    case PeriodicWaveforms::SAW_UP:
+      return "Saw up";
+    case PeriodicWaveforms::SAW_DOWN:
+      return "Saw down";
+    default:
+      return "Unknown waveform";
+  }
 }
 
 int PeriodicEffectSettings::waveformIdx() const

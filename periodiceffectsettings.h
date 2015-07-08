@@ -17,12 +17,13 @@ public:
   explicit PeriodicEffectSettings(QWidget* parent = 0);
   ~PeriodicEffectSettings();
   const EnvelopeSettings* envelopeSettings() const;
-  void fillAvailableWaveformsList(const QStringList& list);
+  void fillAvailableWaveformsList(const std::vector<PeriodicWaveforms>& list);
   bool fillFromParameters(const std::shared_ptr<FFBEffectParameters> params);
   QString magnitude() const;
   QString offset() const;
   QString period() const;
   QString phase() const;
+  QString waveformTypeToWaveformName(const PeriodicWaveforms waveform) const;
   int waveformIdx() const;
 
 private:

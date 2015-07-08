@@ -14,7 +14,8 @@ class ConditionEffectSettings : public EffectSettings
 public:
   explicit ConditionEffectSettings(QWidget* parent = nullptr);
   ~ConditionEffectSettings();
-  void fillAvailableSubtypesList(const QStringList& list);
+  QString conditionSubtypeToConditionName(const ConditionSubtypes subtype) const;
+  void fillAvailableSubtypesList(const std::vector<ConditionSubtypes>& list);
   bool fillFromParameters(const std::shared_ptr<FFBEffectParameters> params);
   bool fillFromParameters(const std::shared_ptr<FFBConditionEffectParameters> cdParams);
   FFBConditionEffectParameters::Axis axis() const;
@@ -30,7 +31,7 @@ public:
   QString leftSatY() const;
   QString rightSatX() const;
   QString rightSatY() const;
-  int subtypeIdx() const;
+  ConditionSubtypes subtype() const;
 
 private:
   Ui::ConditionEffectSettings* ui;

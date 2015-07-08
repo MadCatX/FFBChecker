@@ -17,68 +17,19 @@ FFBDevice::FFBDevice(const int fd, const QString& path, const int maxEffectCount
     m_effects.push_back(FFBEffectFactory::createEffect(FFBEffectTypes::NONE));
 }
 
-QStringList FFBDevice::availableConditionSubtypesList() const
+const std::vector<ConditionSubtypes>& FFBDevice::availableConditionSubtypesList() const
 {
-  QStringList list;
-
-  for (const ConditionSubtypes s : m_availableConditionSubtypes)
-    list << conditionSubtypeName(s);
-
-  return list;
+  return m_availableConditionSubtypes;
 }
 
-QStringList FFBDevice::availableEffectsList() const
+const std::vector<FFBEffectTypes>& FFBDevice::availableEffectsList() const
 {
-  QStringList list;
-
-  for (const FFBEffectTypes e : m_availableEffects)
-    list << effectName(e);
-
-  return list;
+  return m_availableEffects;
 }
 
-QStringList FFBDevice::availableWaveformsList() const
+const std::vector<PeriodicWaveforms>& FFBDevice::availableWaveformsList() const
 {
-  QStringList list;
-
-  for (const PeriodicWaveforms w : m_availablePeriodicWaveforms)
-    list << waveformName(w);
-
-  return list;
-}
-
-QString FFBDevice::conditionSubtypeName(const ConditionSubtypes subtype) const
-{
-  switch (subtype) {
-    case ConditionSubtypes::DAMPER:
-      return "Damper";
-    case ConditionSubtypes::FRICTION:
-      return "Friction";
-    case ConditionSubtypes::INERTIA:
-      return "Inertia";
-    case ConditionSubtypes::SPRING:
-      return "Spring";
-    default:
-      return "Unknown subtype";
-  }
-}
-
-QString FFBDevice::effectName(const FFBEffectTypes effect) const
-{
-  switch (effect) {
-    case FFBEffectTypes::CONSTANT:
-      return "Constant force";
-    case FFBEffectTypes::PERIODIC:
-      return "Periodic force";
-    case FFBEffectTypes::RAMP:
-      return "Ramp";
-    case FFBEffectTypes::CONDITION:
-      return "Condition";
-    case FFBEffectTypes::RUMBLE:
-      return "Rumble";
-    default:
-      return "Unknown effect";
-  }
+  return m_availablePeriodicWaveforms;
 }
 
 const std::shared_ptr<FFBEffectParameters> FFBDevice::effectParameters(const int idx)
@@ -100,34 +51,6 @@ FFBEffect::FFBEffectStatus FFBDevice::effectStatusByIdx(const int idx) const
 FFBEffectTypes FFBDevice::effectTypeByEffectIdx(const int idx) const
 {
   return m_effects[idx]->type();
-}
-
-unsigned int FFBDevice::effectTypeToIdx(FFBEffectTypes type)
-{
-  for (unsigned int i = 0; i < m_availableEffects.size(); i++) {
-    if (m_availableEffects[i] == type)
-      return i;
-  }
-  qWarning() << "Effect type no found in the list!";
-  return 0;
-}
-
-QString FFBDevice::waveformName(const PeriodicWaveforms waveform) const
-{
-  switch (waveform) {
-    case PeriodicWaveforms::SQUARE:
-      return "Square";
-    case PeriodicWaveforms::TRIANGLE:
-      return "Triangle";
-    case PeriodicWaveforms::SINE:
-      return "Sine";
-    case PeriodicWaveforms::SAW_UP:
-      return "Saw up";
-    case PeriodicWaveforms::SAW_DOWN:
-      return "Saw down";
-    default:
-      return "Unknown waveform";
-  }
 }
 
 bool FFBDevice::hasEffect(FFBEffectTypes id) const
@@ -228,24 +151,21 @@ bool FFBDevice::removeEffect(const int idx)
 bool FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
   int ret;
-  std::shared_ptr<FFBEffect> effect;
 
   CHECK_EFFECT_IDX(idx);
 
-  effect = m_effects[idx];
-
-  if (effect->status() == FFBEffect::FFBEffectStatus::NOT_LOADED) {
+  if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::NOT_LOADED) {
     if (!uploadEffect(idx, type, parameters))
       return false;
   }
-  if (effect->status() == FFBEffect::FFBEffectStatus::PLAYING)
+  if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::PLAYING)
     return true;
 
   /* Start playback */
   struct input_event evt;
   evt.type = EV_FF;
-  evt.code = effect->internalIdx();
-  evt.value = effect->parameters()->repeat;
+  evt.code = m_effects[idx]->internalIdx();
+  evt.value = m_effects[idx]->parameters()->repeat;
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {
@@ -254,7 +174,7 @@ bool FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::share
     return false;
   }
 
-  effect->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
+  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
 
   return true;
 }

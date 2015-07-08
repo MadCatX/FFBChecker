@@ -7,6 +7,9 @@ ConditionEffectSettings::ConditionEffectSettings(QWidget* parent) :
   ui(new Ui::ConditionEffectSettings)
 {
   ui->setupUi(this);
+
+  ui->cbox_axis->setItemData(0, static_cast<std::underlying_type<FFBConditionEffectParameters::Axis>::type>(FFBConditionEffectParameters::Axis::X));
+  ui->cbox_axis->setItemData(1, static_cast<std::underlying_type<FFBConditionEffectParameters::Axis>::type>(FFBConditionEffectParameters::Axis::Y));
   connect(ui->cbox_axis, SIGNAL(currentIndexChanged(int)), this, SLOT(axisChanged(const int)));
   axisChanged(ui->cbox_axis->currentIndex());
 }
@@ -22,10 +25,27 @@ void ConditionEffectSettings::axisChanged(const int idx)
   qDebug() << "Axis changed" << idx;
 }
 
-void ConditionEffectSettings::fillAvailableSubtypesList(const QStringList& list)
+QString ConditionEffectSettings::conditionSubtypeToConditionName(const ConditionSubtypes subtype) const
+{
+  switch (subtype) {
+    case ConditionSubtypes::DAMPER:
+      return "Damper";
+    case ConditionSubtypes::FRICTION:
+      return "Friction";
+    case ConditionSubtypes::INERTIA:
+      return "Inertia";
+    case ConditionSubtypes::SPRING:
+      return "Spring";
+    default:
+      return "Unknown subtype";
+  }
+}
+
+void ConditionEffectSettings::fillAvailableSubtypesList(const std::vector<ConditionSubtypes>& list)
 {
   ui->cbox_subtype->clear();
-  ui->cbox_subtype->addItems(list);
+  for (const ConditionSubtypes subtype : list)
+    ui->cbox_subtype->addItem(conditionSubtypeToConditionName(subtype), static_cast<std::underlying_type<ConditionSubtypes>::type>(subtype));
 }
 
 bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectParameters> params)
@@ -59,14 +79,8 @@ bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBCondit
 
 FFBConditionEffectParameters::Axis ConditionEffectSettings::axis() const
 {
-  switch (ui->cbox_axis->currentIndex()) {
-    case 0:
-      return FFBConditionEffectParameters::Axis::X;
-    case 1:
-      return FFBConditionEffectParameters::Axis::Y;
-    default:
-      return FFBConditionEffectParameters::Axis::NONE;
-  }
+  FFBConditionEffectParameters::Axis a = *static_cast<FFBConditionEffectParameters::Axis*>(ui->cbox_axis->currentData(Qt::UserRole).data());
+  return a;
 }
 
 QString ConditionEffectSettings::centerX() const
@@ -129,9 +143,10 @@ QString ConditionEffectSettings::rightSatY() const
   return ui->qle_rightSatY->text();
 }
 
-int ConditionEffectSettings::subtypeIdx() const
+ConditionSubtypes ConditionEffectSettings::subtype() const
 {
-  return ui->cbox_subtype->currentIndex();
+  ConditionSubtypes subtype = *static_cast<ConditionSubtypes*>(ui->cbox_subtype->currentData(Qt::UserRole).data());
+  return subtype;
 }
 
 ConditionEffectSettings::~ConditionEffectSettings()

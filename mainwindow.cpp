@@ -61,6 +61,24 @@ EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
   }
 }
 
+QString MainWindow::effectTypeToEffectName(const FFBEffectTypes etype) const
+{
+  switch (etype) {
+    case FFBEffectTypes::CONSTANT:
+      return "Constant force";
+    case FFBEffectTypes::PERIODIC:
+      return "Periodic force";
+    case FFBEffectTypes::RAMP:
+      return "Ramp";
+    case FFBEffectTypes::CONDITION:
+      return "Condition";
+    case FFBEffectTypes::RUMBLE:
+      return "Rumble";
+    default:
+      return "Unknown effect";
+  }
+}
+
 void MainWindow::fillDeviceList()
 {
   ui->cbox_devices->clear();
@@ -69,22 +87,25 @@ void MainWindow::fillDeviceList()
     ui->cbox_devices->addItem(dinfo.tag, dinfo.path);
 }
 
-void MainWindow::fillEffectSlotsList(const int idx)
+void MainWindow::fillEffectSlotsList(const int effectCount)
 {
   ui->cbox_effectSlots->clear();
-  for (int i = 1; i <= idx; i++)
-    ui->cbox_effectSlots->addItem(QString::number(i));
+  for (int i = 1; i <= effectCount; i++)
+    ui->cbox_effectSlots->addItem(QString::number(i), i-1);
 }
 
-void MainWindow::fillEffectTypesList(const QStringList& list)
+void MainWindow::fillEffectTypesList(const std::vector<FFBEffectTypes>& list)
 {
   ui->cbox_effectTypes->clear();
-  ui->cbox_effectTypes->addItems(list);
+  for (const FFBEffectTypes etype : list)
+    ui->cbox_effectTypes->addItem(effectTypeToEffectName(etype), static_cast<std::underlying_type<FFBEffectTypes>::type>(etype));
 }
 
-void MainWindow::onDeviceSelected(const int idx)
+void MainWindow::onDeviceSelected(const int cboxIdx)
 {
-  QString path = ui->cbox_devices->itemData(idx, Qt::UserRole).toString();
+  Q_UNUSED(cboxIdx);
+
+  QString path = ui->cbox_devices->currentData(Qt::UserRole).toString();
   ui->cbox_effectSlots->clear();
   m_activeDevice = m_prober->openDevice(path);
 
@@ -95,48 +116,58 @@ void MainWindow::onDeviceSelected(const int idx)
   fillEffectTypesList(m_activeDevice->availableEffectsList());
   m_conditionEffSet->fillAvailableSubtypesList(m_activeDevice->availableConditionSubtypesList());
   m_periodicEffSet->fillAvailableWaveformsList(m_activeDevice->availableWaveformsList());
+  ui->cbox_effectSlots->setCurrentIndex(0);
   onEffectSlotSelected(0);
 }
 
-void MainWindow::onEffectSlotSelected(const int idx)
+void MainWindow::onEffectSlotSelected(const int cboxIdx)
 {
-  if (idx < 0)
-    return;
+  int effectIdx;
+  bool ok;
+
+  Q_UNUSED(cboxIdx);
+
   if (m_activeDevice == nullptr)
     return;
 
-  FFBEffectTypes type = m_activeDevice->effectTypeByEffectIdx(idx);
-  qDebug() << static_cast<int>(type);
-  if (type == FFBEffectTypes::NONE) {
+  effectIdx = ui->cbox_effectSlots->currentData(Qt::UserRole).toInt(&ok);
+  if (!ok) {
+    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    return;
+  }
+  FFBEffectTypes etype = m_activeDevice->effectTypeByEffectIdx(effectIdx);
+  qDebug() << static_cast<int>(etype);
+  if (etype == FFBEffectTypes::NONE) {
     qDebug() << "Empty effect";
-    ui->cbox_effectTypes->setCurrentIndex(0);
-    ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(m_activeDevice->effectTypeFromSelectionIdx(0)));
+    setEffectTypeIndexByType(etype);
+    ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(FFBEffectTypes::CONSTANT));
     setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
     return;
   }
 
-  const std::shared_ptr<FFBEffectParameters> params = m_activeDevice->effectParameters(idx);
+  const std::shared_ptr<FFBEffectParameters> params = m_activeDevice->effectParameters(effectIdx);
   /* Set global parameters */
   ui->qle_direction->setText(QString::number(params->direction));
   ui->qle_replayDelay->setText(QString::number(params->replayDelay));
   ui->qle_replayLength->setText(QString::number(params->replayLength));
 
-  EffectSettings* efs = effectSettingsByType(type);
+  EffectSettings* efs = effectSettingsByType(etype);
   if (!efs->fillFromParameters(params))
     QMessageBox::warning(this, "UI error", "Unable to read effect parameters.");
-  ui->cbox_effectTypes->setCurrentIndex(m_activeDevice->effectTypeToIdx(type));
+  setEffectTypeIndexByType(etype);
   ui->qstw_effectSpecifics->setCurrentWidget(efs);
-  setEffectStatusText(m_activeDevice->effectStatusByIdx(idx));
+  setEffectStatusText(m_activeDevice->effectStatusByIdx(effectIdx));
 }
 
-void MainWindow::onEffectTypeSelected(const int idx)
+void MainWindow::onEffectTypeSelected(const int cboxIdx)
 {
-  if (idx < 0)
-    return;
+  Q_UNUSED(cboxIdx);
+
   if (m_activeDevice == nullptr)
     return;
 
-  ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(m_activeDevice->effectTypeFromSelectionIdx(idx)));
+  FFBEffectTypes etype = *static_cast<FFBEffectTypes*>(ui->cbox_effectTypes->currentData(Qt::UserRole).data());
+  ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(etype));
 }
 
 void MainWindow::onRefreshDevicesClicked()
@@ -156,17 +187,25 @@ void MainWindow::onRemoveEffectClicked()
 
 void MainWindow::onStartEffectClicked()
 {
+  bool ok;
+  int effectSlot;
+
   if (m_activeDevice == nullptr)
     return;
 
-  FFBEffectTypes type = m_activeDevice->effectTypeFromSelectionIdx(ui->cbox_effectTypes->currentIndex());
+  FFBEffectTypes etype = *static_cast<FFBEffectTypes*>(ui->cbox_effectTypes->currentData(Qt::UserRole).data());
   std::shared_ptr<FFBEffectParameters> params;
-  int effectSlot = ui->cbox_effectSlots->currentIndex();
-  if (!readEffectParameters(params, type)) {
+  effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
+  if (!ok) {
+    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    return;
+  }
+
+  if (!readEffectParameters(params, etype)) {
     qDebug() << "Cannot read effect params.";
     return;
   }
-  bool ret = m_activeDevice->startEffect(effectSlot, type, params);
+  bool ret = m_activeDevice->startEffect(effectSlot, etype, params);
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
   else
@@ -175,28 +214,42 @@ void MainWindow::onStartEffectClicked()
 
 void MainWindow::onStopEffectClicked()
 {
+  int effectSlot;
+  bool ok;
+
   if (m_activeDevice == nullptr)
     return;
 
-  int effectSlot = ui->cbox_effectSlots->currentIndex();
+  effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
+  if (!ok) {
+    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    return;
+  }
   m_activeDevice->stopEffect(effectSlot);
   setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
 }
 
 void MainWindow::onUploadEffectClicked()
 {
+  bool ok;
+  int effectSlot;
+
   if (m_activeDevice == nullptr)
     return;
 
-  FFBEffectTypes type = m_activeDevice->effectTypeFromSelectionIdx(ui->cbox_effectTypes->currentIndex());
+  FFBEffectTypes etype = *static_cast<FFBEffectTypes*>(ui->cbox_effectTypes->currentData(Qt::UserRole).data());
   std::shared_ptr<FFBEffectParameters> params;
-  int effectSlot = ui->cbox_effectSlots->currentIndex();
+  effectSlot = ui->cbox_effectSlots->currentData().toInt(&ok);
+  if (!ok) {
+    QMessageBox::critical(this, "Runtime error", "Nonsensical data passed as effect slot index.");
+    return;
+  }
 
-  if (!readEffectParameters(params, type)) {
+  if (!readEffectParameters(params, etype)) {
     qDebug() << "Cannot read effect params.";
     return;
   }
-  bool ret = m_activeDevice->uploadEffect(effectSlot, type, params);
+  bool ret = m_activeDevice->uploadEffect(effectSlot, etype, params);
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
   else
@@ -332,8 +385,8 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
         return false;
       }
 
-      ConditionSubtypes subtype = m_activeDevice->conditionSubtypeByIdx(m_conditionEffSet->subtypeIdx());
-      iParams->subtypeFromIdx(subtype);
+      ConditionSubtypes subtype = m_conditionEffSet->subtype();
+      iParams->subtype = subtype;
 
       params = iParams;
       break;
@@ -417,6 +470,17 @@ void MainWindow::setEffectStatusText(const FFBEffect::FFBEffectStatus status)
       ui->ql_effectStatus->setText(res_effectUploaded);
       break;
     }
+}
+
+void MainWindow::setEffectTypeIndexByType(const FFBEffectTypes etype)
+{
+  for (int idx = 0; idx < ui->cbox_effectTypes->count(); idx++) {
+    FFBEffectTypes ietype = *static_cast<FFBEffectTypes*>(ui->cbox_effectTypes->itemData(idx, Qt::UserRole).data());
+    if (ietype == etype) {
+      ui->cbox_effectTypes->setCurrentIndex(idx);
+      return;
+    }
+  }
 }
 
 MainWindow::~MainWindow()

@@ -29,13 +29,15 @@ public:
 
 private:
   EffectSettings* effectSettingsByType(FFBEffectTypes type);
+  QString effectTypeToEffectName(const FFBEffectTypes type) const;
   void fillDeviceList();
-  void fillEffectSlotsList(const int idx);
-  void fillEffectTypesList(const QStringList& list);
+  void fillEffectSlotsList(const int effectCount);
+  void fillEffectTypesList(const std::vector<FFBEffectTypes>& list);
   bool readEnvelopeParameters(std::shared_ptr<FFBEnvelopeParameters> params, const EnvelopeSettings* es);
-  bool readEffectParameters(std::shared_ptr<FFBEffectParameters>& params, FFBEffectTypes type);
+  bool readEffectParameters(std::shared_ptr<FFBEffectParameters>& params, FFBEffectTypes etype);
   bool readGeneralEffectParameters(std::shared_ptr<FFBEffectParameters> params);
   void setEffectStatusText(const FFBEffect::FFBEffectStatus status);
+  void setEffectTypeIndexByType(const FFBEffectTypes etype);
 
   std::shared_ptr<FFBDevice> m_activeDevice;
   ConditionEffectSettings* m_conditionEffSet;
@@ -53,9 +55,9 @@ private:
   static const QString res_inputFormatErrCap;
 
 private slots:
-  void onDeviceSelected(const int idx);
-  void onEffectSlotSelected(const int idx);
-  void onEffectTypeSelected(const int idx);
+  void onDeviceSelected(const int cboxIdx);
+  void onEffectSlotSelected(const int cboxIdx);
+  void onEffectTypeSelected(const int cboxIdx);
   void onRefreshDevicesClicked();
   void onRemoveEffectClicked();
   void onStartEffectClicked();
