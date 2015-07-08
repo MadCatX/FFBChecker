@@ -177,9 +177,19 @@ void MainWindow::onRefreshDevicesClicked()
 
 void MainWindow::onRemoveEffectClicked()
 {
+  int effectIdx;
+  bool ok;
+
   if (m_activeDevice == nullptr)
     return;
-  if (!m_activeDevice->removeAndEraseEffect(ui->cbox_effectSlots->currentIndex()))
+
+  effectIdx = ui->cbox_effectSlots->currentData(Qt::UserRole).toInt(&ok);
+  if (!ok) {
+    showErrorMsgBox(ErrorMessages::BAD_EFFECT_SLOT);
+    return;
+  }
+
+  if (!m_activeDevice->removeAndEraseEffect(effectIdx))
     showErrorMsgBox(ErrorMessages::CANT_REMOVE_EFFECT);
   else
     setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
