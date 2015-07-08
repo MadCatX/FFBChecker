@@ -12,7 +12,7 @@ class DeviceProber : public QObject
 public:
   struct DeviceInfo {
     QString path;
-    QString tag;
+    QString name;
   };
   typedef QList<DeviceInfo> DeviceList;
 

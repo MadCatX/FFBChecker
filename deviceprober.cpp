@@ -36,11 +36,10 @@ DeviceProber::DeviceList DeviceProber::listDevices()
 
     dinfo.path = devicePath;
     ret = ioctl(fd, EVIOCGNAME(64), deviceName);
-    if (ret < 0) {
+    if (ret < 0)
       qDebug() << "Cannot get name of device" << d << strerror(errno);
-      dinfo.tag = QString("[%1]").arg(d);
-    } else
-      dinfo.tag = QString("%1 [%2]").arg(deviceName).arg(d);
+    else
+      dinfo.name = deviceName;
 
     list.append(dinfo);
   }

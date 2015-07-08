@@ -83,8 +83,16 @@ void MainWindow::fillDeviceList()
 {
   ui->cbox_devices->clear();
 
-  for (const DeviceProber::DeviceInfo& dinfo : m_prober->listDevices())
-    ui->cbox_devices->addItem(dinfo.tag, dinfo.path);
+  for (const DeviceProber::DeviceInfo& dinfo : m_prober->listDevices()) {
+    QString name;
+    if (dinfo.name.length() == 0)
+      name = "(no name)";
+    else
+      name = dinfo.name;
+
+    QString tag = QString("%1 [%2]").arg(name).arg(dinfo.path);
+    ui->cbox_devices->addItem(tag, dinfo.path);
+  }
 }
 
 void MainWindow::fillEffectSlotsList(const int effectCount)
