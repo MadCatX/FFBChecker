@@ -1,6 +1,0 @@
-Version 0.2b
-TODO:
-- Condition effects for X and Y axis
-
-KNOWN ISSUES:
-- None
