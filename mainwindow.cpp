@@ -57,8 +57,12 @@ void MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
 {
   std::shared_ptr<DeviceProber> prober;
 
-  if (m_prober != nullptr)
+  if (m_prober != nullptr) {
+    if (m_prober->type == iface)
+      return;
+
     m_prober->closeAllDevices();
+  }
 
   switch (iface) {
   case DeviceProber::DeviceInterfaces::LINUX:
@@ -111,6 +115,9 @@ QString MainWindow::effectTypeToEffectName(const FFBEffectTypes etype) const
 void MainWindow::fillDeviceList()
 {
   ui->cbox_devices->clear();
+
+  if (m_prober == nullptr)
+    return;
 
   for (const DeviceProber::DeviceInfo& dinfo : m_prober->listDevices()) {
     QString name;
@@ -220,8 +227,11 @@ void MainWindow::onInterfaceSelected(const int cboxIdx)
     return;
   }
 
+  ui->cbox_effectSlots->clear();
+
   iface = static_cast<DeviceProber::DeviceInterfaces>(rawIface);
   createDeviceProber(iface);
+  fillDeviceList();
 }
 
 void MainWindow::onRefreshDevicesClicked()
