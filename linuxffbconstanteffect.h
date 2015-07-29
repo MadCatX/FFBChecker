@@ -1,13 +1,13 @@
-#ifndef FFBCONSTANTEFFECT_H
-#define FFBCONSTANTEFFECT_H
+#ifndef LINUXFFBCONSTANTEFFECT_H
+#define LINUXFFBCONSTANTEFFECT_H
 
-#include "ffbeffect.h"
+#include "linuxffbeffect.h"
 #include "ffbconstanteffectparameters.h"
 
-class FFBConstantEffect : public FFBEffect
+class LinuxFFBConstantEffect : public LinuxFFBEffect
 {
 public:
-  explicit FFBConstantEffect();
+  explicit LinuxFFBConstantEffect();
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
@@ -17,4 +17,4 @@ private:
   std::shared_ptr<FFBConstantEffectParameters> m_params;
 };
 
-#endif // FFBCONSTANTEFFECT_H
+#endif // LINUXFFBCONSTANTEFFECT_H

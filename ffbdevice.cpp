@@ -1,5 +1,4 @@
 #include "ffbdevice.h"
-#include "ffbeffectfactory.h"
 
 const std::vector<ConditionSubtypes>& FFBDevice::availableConditionSubtypesList() const
 {

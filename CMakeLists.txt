@@ -25,19 +25,20 @@ set(FFBChecker_SRCS
     constanteffectsettings.cpp
     effectsettings.cpp
     envelopesettings.cpp
-    ffbconditioneffect.cpp
+    linuxffbconditioneffect.cpp
     ffbconditioneffectparameters.cpp
-    ffbconstanteffect.cpp
+    linuxffbconstanteffect.cpp
     ffbconstanteffectparameters.cpp
     ffbdevice.cpp
     ffbeffect.cpp
-    ffbeffectfactory.cpp
+    linuxffbeffect.cpp
+    linuxffbeffectfactory.cpp
     ffbeffectparameters.cpp
     ffbenvelopeparameters.cpp
     ffbnulleffect.cpp
-    ffbperiodiceffect.cpp
+    linuxffbperiodiceffect.cpp
     ffbperiodiceffectparameters.cpp
-    ffbrampeffect.cpp
+    linuxffbrampeffect.cpp
     ffbrampeffectparameters.cpp
     ffbrumbleeffect.cpp
     ffbrumbleeffectparameters.cpp

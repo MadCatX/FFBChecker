@@ -1,5 +1,5 @@
 #include "linuxffbdevice.h"
-#include "ffbeffectfactory.h"
+#include "linuxffbeffectfactory.h"
 #include <QtWidgets/QMessageBox>
 #include <QDebug>
 #include <fcntl.h>
@@ -17,7 +17,7 @@ LinuxFFBDevice::LinuxFFBDevice(const int fd, const int maxEffectCount, const QSt
   c_path(path)
 {
   for (int i = 0; i < maxEffectCount; i++)
-    m_effects.push_back(FFBEffectFactory::createEffect(FFBEffectTypes::NONE));
+    m_effects.push_back(LinuxFFBEffectFactory::createEffect(FFBEffectTypes::NONE));
 }
 
 void LinuxFFBDevice::close()
@@ -83,7 +83,7 @@ bool LinuxFFBDevice::removeAndEraseEffect(const int idx)
     return true;
 
   if (removeEffect(idx)) {
-    m_effects[idx] = FFBEffectFactory::createEffect(FFBEffectTypes::NONE);
+    m_effects[idx] = LinuxFFBEffectFactory::createEffect(FFBEffectTypes::NONE);
     if (m_effects[idx]->type() != FFBEffectTypes::NONE) {
       qCritical("Unable to empty the effect slot.");
       return false;
@@ -99,10 +99,16 @@ bool LinuxFFBDevice::removeAndEraseEffect(const int idx)
 
 bool LinuxFFBDevice::removeEffect(const int idx)
 {
+  std::shared_ptr<LinuxFFBEffect> linEff;
   if (!stopEffect(idx))
     return false;
 
-  int internalIdx = m_effects[idx]->internalIdx();
+  if (m_effects[idx]->type() == FFBEffectTypes::NONE)
+    return true;
+
+  linEff = std::static_pointer_cast<LinuxFFBEffect>(m_effects[idx]);
+
+  int internalIdx = linEff->internalIdx();
   int ret = ioctl(c_fd, EVIOCRMFF, internalIdx);
   if (ret < 0)
     return false;
@@ -111,6 +117,7 @@ bool LinuxFFBDevice::removeEffect(const int idx)
 
 bool LinuxFFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
+  std::shared_ptr<LinuxFFBEffect> linEff;
   int ret;
 
   CHECK_EFFECT_IDX(idx);
@@ -122,11 +129,13 @@ bool LinuxFFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::
   if (m_effects[idx]->status() == FFBEffect::FFBEffectStatus::PLAYING)
     return true;
 
+  linEff = std::static_pointer_cast<LinuxFFBEffect>(m_effects[idx]);
+
   /* Start playback */
   struct input_event evt;
   evt.type = EV_FF;
-  evt.code = m_effects[idx]->internalIdx();
-  evt.value = m_effects[idx]->parameters()->repeat;
+  evt.code = linEff->internalIdx();
+  evt.value = linEff->parameters()->repeat;
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {
@@ -135,13 +144,15 @@ bool LinuxFFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::
     return false;
   }
 
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
+  linEff->setStatus(FFBEffect::FFBEffectStatus::PLAYING);
 
   return true;
 }
 
 bool LinuxFFBDevice::stopEffect(const int idx)
 {
+  std::shared_ptr<LinuxFFBEffect> linEff;
+
   CHECK_EFFECT_IDX(idx);
 
   if (m_effects[idx] == nullptr)
@@ -150,7 +161,9 @@ bool LinuxFFBDevice::stopEffect(const int idx)
   if (m_effects[idx]->status() != FFBEffect::FFBEffectStatus::PLAYING)
     return true;
 
-  int internalIdx = m_effects[idx]->internalIdx();
+  linEff = std::static_pointer_cast<LinuxFFBEffect>(m_effects[idx]);
+
+  int internalIdx = linEff->internalIdx();
 
   struct input_event evt;
   evt.type = EV_FF;
@@ -161,22 +174,28 @@ bool LinuxFFBDevice::stopEffect(const int idx)
   if (ret != sizeof(struct input_event))
     return false;
 
-  m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+  linEff->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
   return true;
 }
 
 bool LinuxFFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
   struct ff_effect* kernelEff = nullptr;
-  std::shared_ptr<FFBEffect> effect = FFBEffectFactory::createEffect(type);
+  std::shared_ptr<FFBEffect> effect = LinuxFFBEffectFactory::createEffect(type);
+  std::shared_ptr<LinuxFFBEffect> linEff;
+
+  if (type != FFBEffectTypes::NONE)
+    linEff = std::static_pointer_cast<LinuxFFBEffect>(effect);
+  else
+    return false;
 
   CHECK_EFFECT_IDX(idx);
 
-  if (effect == nullptr) {
+  if (linEff == nullptr) {
     qDebug() << "Unable to create effect";
     return false;
   }
-  if (!effect->setParameters(parameters)) {
+  if (!linEff->setParameters(parameters)) {
     qDebug() << "Unable to set effect parameters, some values are probably invalid.";
     return false;
   }
@@ -188,31 +207,30 @@ bool LinuxFFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std:
 
   /* There is no effect in the selected slot */
   if (m_effects[idx]->type() == FFBEffectTypes::NONE) {
-    effect->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+    linEff->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
     qDebug() << "Creating new effect";
   } else {
-    if (*m_effects[idx] != *effect) {
+
+    if (*m_effects[idx] != *linEff) {
       if (!removeEffect(idx)) {
         QMessageBox::critical(nullptr, "FFB Device", "Unable to remove effect");
         return false;
       }
-      effect->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+      linEff->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
       qDebug() << "Recreating effect" << idx;
     } else {
-      effect->setInternalIdx(m_effects[idx]->internalIdx());
-      effect->setStatus(m_effects[idx]->status());
+      linEff->setInternalIdx(std::static_pointer_cast<LinuxFFBEffect>(m_effects[idx])->internalIdx());
+      linEff->setStatus(m_effects[idx]->status());
       qDebug() << "Updating effect" << idx;
     }
   }
 
-  kernelEff = effect->createFFStruct();
+  kernelEff = linEff->createFFStruct();
   if (kernelEff == nullptr) {
     QMessageBox::critical(nullptr, "FFB Device", "ff_effect struct could not have been created. Effect not uploaded.");
     qDebug() << "struct ff_effect not created";
     return false;
   }
-
-  qDebug() << kernelEff->u.condition[0].center << kernelEff->u.condition[0].deadband << kernelEff->u.condition[1].center << kernelEff->u.condition[1].deadband;
 
   int ret = ioctl(c_fd, EVIOCSFF, kernelEff);
   if (ret < 0) {
@@ -222,9 +240,9 @@ bool LinuxFFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std:
     return false;
   }
 
-  effect->setInternalIdx(kernelEff->id);
+  linEff->setInternalIdx(kernelEff->id);
   delete kernelEff;
 
-  m_effects[idx] = effect;
+  m_effects[idx] = linEff;
   return true;
 }

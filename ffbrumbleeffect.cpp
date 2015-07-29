@@ -1,13 +1,13 @@
-#include "ffbrumbleeffect.h"
+#include "linuxffbrumbleeffect.h"
 
-FFBRumbleEffect::FFBRumbleEffect() :
-  FFBEffect(FFBEffectTypes::RUMBLE)
+LinuxFFBRumbleEffect::LinuxFFBRumbleEffect() :
+  LinuxFFBEffect(FFBEffectTypes::RUMBLE)
 {
 }
 
-struct ff_effect* FFBRumbleEffect::createFFStruct()
+struct ff_effect* LinuxFFBRumbleEffect::createFFStruct()
 {
-  struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
+  struct ff_effect* eff = LinuxFFBEffect::createFFStruct(m_params);
 
   eff->type = FF_RUMBLE;
 
@@ -17,7 +17,7 @@ struct ff_effect* FFBRumbleEffect::createFFStruct()
   return eff;
 }
 
-bool FFBRumbleEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
+bool LinuxFFBRumbleEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBRumbleEffectParameters>(params));
@@ -27,7 +27,7 @@ bool FFBRumbleEffect::setParameters(const std::shared_ptr<FFBEffectParameters> p
   }
 }
 
-bool FFBRumbleEffect::setParameters(const std::shared_ptr<FFBRumbleEffectParameters> params)
+bool LinuxFFBRumbleEffect::setParameters(const std::shared_ptr<FFBRumbleEffectParameters> params)
 {
   if (!checkGenericParameters(params))
     return false;

@@ -1,14 +1,13 @@
-#ifndef FFBRAMPEFFECT_H
-#define FFBRAMPEFFECT_H
+#ifndef LINUXFFBRAMPEFFECT_H
+#define LINUXFFBRAMPEFFECT_H
 
-#include "ffbeffect.h"
+#include "linuxffbeffect.h"
 #include "ffbrampeffectparameters.h"
 
-class FFBRampEffect : public FFBEffect
+class LinuxFFBRampEffect : public LinuxFFBEffect
 {
 public:
-  FFBRampEffect();
-  ~FFBRampEffect();
+  LinuxFFBRampEffect();
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);

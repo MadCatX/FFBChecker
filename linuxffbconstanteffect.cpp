@@ -1,15 +1,14 @@
-#include "ffbconstanteffect.h"
+#include "linuxffbconstanteffect.h"
 #include "globalsettings.h"
 
-FFBConstantEffect::FFBConstantEffect() :
-  FFBEffect(FFBEffectTypes::CONSTANT)
-{
-}
+LinuxFFBConstantEffect::LinuxFFBConstantEffect() :
+  LinuxFFBEffect(FFBEffectTypes::CONSTANT)
+{}
 
-struct ff_effect* FFBConstantEffect::createFFStruct()
+struct ff_effect* LinuxFFBConstantEffect::createFFStruct()
 {
   /* Set up generic effect parameters */
-  struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
+  struct ff_effect* eff = LinuxFFBEffect::createFFStruct(m_params);
 
   eff->type = FF_CONSTANT;
 
@@ -23,7 +22,7 @@ struct ff_effect* FFBConstantEffect::createFFStruct()
   return eff;
 }
 
-bool FFBConstantEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
+bool LinuxFFBConstantEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBConstantEffectParameters>(params));
@@ -33,7 +32,7 @@ bool FFBConstantEffect::setParameters(const std::shared_ptr<FFBEffectParameters>
   return false;
 }
 
-bool FFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffectParameters> params)
+bool LinuxFFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffectParameters> params)
 {
   if (!checkGenericParameters(params))
     return false;

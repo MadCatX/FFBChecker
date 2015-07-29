@@ -1,13 +1,13 @@
-#ifndef FFBRUMBLEEFFECT_H
-#define FFBRUMBLEEFFECT_H
+#ifndef LINUXFFBRUMBLEEFFECT_H
+#define LINUXFFBRUMBLEEFFECT_H
 
-#include "ffbeffect.h"
+#include "linuxffbeffect.h"
 #include "ffbrumbleeffectparameters.h"
 
-class FFBRumbleEffect : public FFBEffect
+class LinuxFFBRumbleEffect : public LinuxFFBEffect
 {
 public:
-  FFBRumbleEffect();
+  LinuxFFBRumbleEffect();
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);

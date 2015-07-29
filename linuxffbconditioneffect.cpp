@@ -1,13 +1,13 @@
-#include "ffbconditioneffect.h"
+#include "linuxffbconditioneffect.h"
 #include "globalsettings.h"
 
-FFBConditionEffect::FFBConditionEffect() :
-  FFBEffect(FFBEffectTypes::CONDITION)
+LinuxFFBConditionEffect::LinuxFFBConditionEffect() :
+  LinuxFFBEffect(FFBEffectTypes::CONDITION)
 {}
 
-struct ff_effect* FFBConditionEffect::createFFStruct()
+struct ff_effect* LinuxFFBConditionEffect::createFFStruct()
 {
-  struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
+  struct ff_effect* eff = LinuxFFBEffect::createFFStruct(m_params);
 
   eff->u.condition[0].center = m_params->center[FFBConditionEffectParameters::Axis::X];
   eff->u.condition[0].deadband = m_params->deadband[FFBConditionEffectParameters::Axis::X];
@@ -45,7 +45,7 @@ struct ff_effect* FFBConditionEffect::createFFStruct()
   return eff;
 }
 
-bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
+bool LinuxFFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBConditionEffectParameters>(params));
@@ -56,7 +56,7 @@ bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters
   return false;
 }
 
-bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectParameters> params)
+bool LinuxFFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectParameters> params)
 {
   if (!checkGenericParameters(params))
     return false;
@@ -126,13 +126,13 @@ bool FFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectP
   return true;
 }
 
-bool FFBConditionEffect::operator==(const FFBEffect& other) const
+bool LinuxFFBConditionEffect::operator==(const FFBEffect& other) const
 {
   if (this->type() != other.type())
     return false;
   else {
     try {
-      const FFBConditionEffect& cother = dynamic_cast<const FFBConditionEffect&>(other);
+      const LinuxFFBConditionEffect& cother = dynamic_cast<const LinuxFFBConditionEffect&>(other);
       return this->m_params->subtype == cother.m_params->subtype;
     } catch (std::bad_cast&) {
       return false;

@@ -1,14 +1,13 @@
-#ifndef FFBPERIODICEFFECT_H
-#define FFBPERIODICEFFECT_H
+#ifndef LINUXFFBPERIODICEFFECT_H
+#define LINUXFFBPERIODICEFFECT_H
 
-#include "ffbeffect.h"
+#include "linuxffbeffect.h"
 #include "ffbperiodiceffectparameters.h"
 
-class FFBPeriodicEffect : public FFBEffect
+class LinuxFFBPeriodicEffect : public LinuxFFBEffect
 {
 public:
-  FFBPeriodicEffect();
-  ~FFBPeriodicEffect();
+  LinuxFFBPeriodicEffect();
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
@@ -19,4 +18,4 @@ private:
   std::shared_ptr<FFBPeriodicEffectParameters> m_params;
 };
 
-#endif // FFBPERIODICEFFECT_H
+#endif // LINUXFFBPERIODICEFFECT_H

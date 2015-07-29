@@ -1,13 +1,13 @@
-#ifndef FFBCONDITIONEFFECT_H
-#define FFBCONDITIONEFFECT_H
+#ifndef LINUXFFBCONDITIONEFFECT_H
+#define LINUXFFBCONDITIONEFFECT_H
 
-#include "ffbeffect.h"
+#include "linuxffbeffect.h"
 #include "ffbconditioneffectparameters.h"
 
-class FFBConditionEffect : public FFBEffect
+class LinuxFFBConditionEffect : public LinuxFFBEffect
 {
 public:
-  explicit FFBConditionEffect();
+  explicit LinuxFFBConditionEffect();
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);

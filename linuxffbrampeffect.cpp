@@ -1,14 +1,14 @@
-#include "ffbrampeffect.h"
+#include "linuxffbrampeffect.h"
 #include "globalsettings.h"
 
-FFBRampEffect::FFBRampEffect() :
-  FFBEffect(FFBEffectTypes::RAMP)
+LinuxFFBRampEffect::LinuxFFBRampEffect() :
+  LinuxFFBEffect(FFBEffectTypes::RAMP)
 {
 }
 
-struct ff_effect* FFBRampEffect::createFFStruct()
+struct ff_effect* LinuxFFBRampEffect::createFFStruct()
 {
-  struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
+  struct ff_effect* eff = LinuxFFBEffect::createFFStruct(m_params);
   if (eff == nullptr)
     return nullptr;
 
@@ -26,7 +26,7 @@ struct ff_effect* FFBRampEffect::createFFStruct()
 }
 
 
-bool FFBRampEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
+bool LinuxFFBRampEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBRampEffectParameters>(params));
@@ -36,7 +36,7 @@ bool FFBRampEffect::setParameters(const std::shared_ptr<FFBEffectParameters> par
   }
 }
 
-bool FFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParameters> params)
+bool LinuxFFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParameters> params)
 {
   if (!checkGenericParameters(params))
     return false;
@@ -75,8 +75,4 @@ bool FFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParameters>
 
   m_params = params;
   return true;
-}
-
-FFBRampEffect::~FFBRampEffect()
-{
 }

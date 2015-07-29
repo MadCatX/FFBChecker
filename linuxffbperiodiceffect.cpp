@@ -1,14 +1,14 @@
-#include "ffbperiodiceffect.h"
+#include "linuxffbperiodiceffect.h"
 #include "globalsettings.h"
 #include <QDebug>
 
-FFBPeriodicEffect::FFBPeriodicEffect() :
-  FFBEffect(FFBEffectTypes::PERIODIC)
+LinuxFFBPeriodicEffect::LinuxFFBPeriodicEffect() :
+  LinuxFFBEffect(FFBEffectTypes::PERIODIC)
 {}
 
-struct ff_effect* FFBPeriodicEffect::createFFStruct()
+struct ff_effect* LinuxFFBPeriodicEffect::createFFStruct()
 {
-  struct ff_effect* eff = FFBEffect::createFFStruct(m_params);
+  struct ff_effect* eff = LinuxFFBEffect::createFFStruct(m_params);
   if (eff == nullptr)
     return nullptr;
 
@@ -48,7 +48,7 @@ struct ff_effect* FFBPeriodicEffect::createFFStruct()
   return eff;
 }
 
-bool FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
+bool LinuxFFBPeriodicEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     return setParameters(std::dynamic_pointer_cast<FFBPeriodicEffectParameters>(params));
@@ -58,7 +58,7 @@ bool FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBEffectParameters>
   }
 }
 
-bool FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffectParameters> params)
+bool LinuxFFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffectParameters> params)
 {
   if (!checkGenericParameters(params))
     return false;
@@ -114,13 +114,13 @@ bool FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffectPar
   return true;
 }
 
-bool FFBPeriodicEffect::operator==(const FFBEffect& other) const
+bool LinuxFFBPeriodicEffect::operator==(const FFBEffect& other) const
 {
   if (this->type() != other.type())
     return false;
   else {
     try {
-      const FFBPeriodicEffect& eff = dynamic_cast<const FFBPeriodicEffect&>(other);
+      const LinuxFFBPeriodicEffect& eff = dynamic_cast<const LinuxFFBPeriodicEffect&>(other);
       return this->m_params->waveform == eff.m_params->waveform;
     } catch(std::bad_cast&) {
       return false;
@@ -128,6 +128,3 @@ bool FFBPeriodicEffect::operator==(const FFBEffect& other) const
   }
 }
 
-FFBPeriodicEffect::~FFBPeriodicEffect()
-{
-}
