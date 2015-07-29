@@ -53,13 +53,13 @@ MainWindow::MainWindow(const QString& title, QWidget* parent) :
   connect(ui->qpb_upload, SIGNAL(clicked()), this, SLOT(onUploadEffectClicked()));
 }
 
-void MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
+bool MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
 {
   std::shared_ptr<DeviceProber> prober;
 
   if (m_prober != nullptr) {
     if (m_prober->type == iface)
-      return;
+      return false;
 
     m_prober->closeAllDevices();
   }
@@ -74,6 +74,7 @@ void MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
   }
 
   m_prober = prober;
+  return true;
 }
 
 EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
@@ -227,16 +228,18 @@ void MainWindow::onInterfaceSelected(const int cboxIdx)
     return;
   }
 
-  ui->cbox_effectSlots->clear();
 
   iface = static_cast<DeviceProber::DeviceInterfaces>(rawIface);
-  createDeviceProber(iface);
+  if (!createDeviceProber(iface))
+    return;
+
+  ui->cbox_effectSlots->clear();
   fillDeviceList();
 }
 
 void MainWindow::onRefreshDevicesClicked()
 {
-  //fillDeviceList();
+  fillDeviceList();
 }
 
 void MainWindow::onRemoveEffectClicked()

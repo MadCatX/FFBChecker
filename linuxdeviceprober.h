@@ -7,7 +7,7 @@
 class LinuxDeviceProber : public DeviceProber
 {
 public:
-  explicit LinuxDeviceProber() {}
+  explicit LinuxDeviceProber() : DeviceProber(DeviceProber::DeviceInterfaces::LINUX) {}
   void closeAllDevices();
   DeviceList listDevices();
   std::shared_ptr<FFBDevice> openDevice(const QString& id);

@@ -28,7 +28,7 @@ public:
   const DeviceInterfaces type;
 
 protected:
-  explicit DeviceProber() : type(DeviceInterfaces::NONE) {}
+  explicit DeviceProber(DeviceInterfaces _type) : type(_type) {}
 };
 
 

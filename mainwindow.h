@@ -35,7 +35,7 @@ private:
     CANT_UPLOAD_EFFECT
   };
 
-  void createDeviceProber(const DeviceProber::DeviceInterfaces iface);
+  bool createDeviceProber(const DeviceProber::DeviceInterfaces iface);
   EffectSettings* effectSettingsByType(FFBEffectTypes type);
   QString effectTypeToEffectName(const FFBEffectTypes type) const;
   void fillDeviceList();
