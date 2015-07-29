@@ -10,6 +10,12 @@ endif()
 
 find_package(Qt5Widgets)
 
+include(FindPkgConfig)
+pkg_search_module(SDL2 sdl2)
+if (SDL2_FOUND)
+    add_definitions("-DFFBC_HAVE_SDL2")
+endif()
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -17,7 +23,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(FFBChecker_SRCS
     conditioneffectsettings.cpp
     constanteffectsettings.cpp
-    deviceprober.cpp
     effectsettings.cpp
     envelopesettings.cpp
     ffbconditioneffect.cpp
@@ -37,14 +42,22 @@ set(FFBChecker_SRCS
     ffbrumbleeffect.cpp
     ffbrumbleeffectparameters.cpp
     globalsettings.cpp
+    linuxdeviceprober.cpp
+    linuxffbdevice.cpp
     main.cpp
     mainwindow.cpp
     periodiceffectsettings.cpp
     rampeffectsettings.cpp
     rumbleeffectsettings.cpp)
 
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+if (SDL2_FOUND)
+    include_directories(${SDL2_INCLUDE_DIRS})
+endif()
 
 add_executable(FFBChecker ${FFBChecker_SRCS})
 target_link_libraries(FFBChecker Qt5::Widgets)
+
+if (SDL2_FOUND)
+    target_link_libraries(FFBChecker ${SDL2_LIBRARIES})
+endif()

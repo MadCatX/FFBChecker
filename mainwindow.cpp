@@ -1,4 +1,5 @@
 #include "globalsettings.h"
+#include "linuxdeviceprober.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QMessageBox>
@@ -10,9 +11,8 @@ const QString MainWindow::res_effectPlaying("Playing");
 const QString MainWindow::res_effectUploaded("Uploaded");
 const QString MainWindow::res_inputFormatErrCap("Invalid input format.");
 
-MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& title, QWidget* parent) :
+MainWindow::MainWindow(const QString& title, QWidget* parent) :
   QMainWindow(parent),
-  m_prober(prober),
   ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
@@ -32,15 +32,44 @@ MainWindow::MainWindow(std::shared_ptr<DeviceProber> prober, const QString& titl
   if (GlobalSettings::GS()->doSanityChecks)
     ui->ql_noChecksWarning->setHidden(true);
 
+  /* Fill the list of available interfaces */
+  ui->cbox_interfaces->addItem("Linux API", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::LINUX));
+#ifdef FFBC_HAVE_SDL2
+  ui->cbox_interfaces->addItem("SDL2", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::SDL2));
+#endif
+
+  ui->cbox_interfaces->setCurrentIndex(0);
+  createDeviceProber(DeviceProber::DeviceInterfaces::LINUX);
   fillDeviceList();
+
   connect(ui->cbox_devices, SIGNAL(activated(const int)), this, SLOT(onDeviceSelected(const int)));
   connect(ui->cbox_effectSlots, SIGNAL(activated(const int)), this, SLOT(onEffectSlotSelected(const int)));
   connect(ui->cbox_effectTypes, SIGNAL(activated(const int)), this, SLOT(onEffectTypeSelected(const int)));
+  connect(ui->cbox_interfaces, SIGNAL(activated(int)), this, SLOT(onInterfaceSelected(const int)));
   connect(ui->qpb_refreshDevices, SIGNAL(clicked()), this, SLOT(onRefreshDevicesClicked()));
   connect(ui->qpb_remove, SIGNAL(clicked()), this, SLOT(onRemoveEffectClicked()));
   connect(ui->qpb_start, SIGNAL(clicked()), this, SLOT(onStartEffectClicked()));
   connect(ui->qpb_stop, SIGNAL(clicked()), this, SLOT(onStopEffectClicked()));
   connect(ui->qpb_upload, SIGNAL(clicked()), this, SLOT(onUploadEffectClicked()));
+}
+
+void MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
+{
+  std::shared_ptr<DeviceProber> prober;
+
+  if (m_prober != nullptr)
+    m_prober->closeAllDevices();
+
+  switch (iface) {
+  case DeviceProber::DeviceInterfaces::LINUX:
+    prober = std::make_shared<LinuxDeviceProber>();
+    break;
+  default:
+    QMessageBox::critical(this, "Cannot probe devices", "Selected interface is not supported yet.");
+    break;
+  }
+
+  m_prober = prober;
 }
 
 EffectSettings* MainWindow::effectSettingsByType(FFBEffectTypes type)
@@ -90,8 +119,8 @@ void MainWindow::fillDeviceList()
     else
       name = dinfo.name;
 
-    QString tag = QString("%1 [%2]").arg(name).arg(dinfo.path);
-    ui->cbox_devices->addItem(tag, dinfo.path);
+    QString tag = QString("%1 [%2]").arg(name).arg(dinfo.id.toString());
+    ui->cbox_devices->addItem(tag, dinfo.id.toString());
   }
 }
 
@@ -178,9 +207,26 @@ void MainWindow::onEffectTypeSelected(const int cboxIdx)
   ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(etype));
 }
 
+void MainWindow::onInterfaceSelected(const int cboxIdx)
+{
+  Q_UNUSED(cboxIdx);
+  bool ok;
+  unsigned int rawIface;
+  DeviceProber::DeviceInterfaces iface;
+
+  rawIface = ui->cbox_interfaces->currentData().toUInt(&ok);
+  if (!ok) {
+    QMessageBox::critical(this, "Invalid data", "Invalid data passed as interface type.");
+    return;
+  }
+
+  iface = static_cast<DeviceProber::DeviceInterfaces>(rawIface);
+  createDeviceProber(iface);
+}
+
 void MainWindow::onRefreshDevicesClicked()
 {
-  fillDeviceList();
+  //fillDeviceList();
 }
 
 void MainWindow::onRemoveEffectClicked()

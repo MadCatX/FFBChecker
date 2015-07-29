@@ -3,33 +3,34 @@
 
 #include "ffbdevice.h"
 #include <memory>
-#include <QtCore/QDir>
+#include <QtCore/QVariant>
 #include <QtCore/QObject>
 
-class DeviceProber : public QObject
+class DeviceProber
 {
-  Q_OBJECT
 public:
   struct DeviceInfo {
-    QString path;
+    QVariant id;
     QString name;
   };
   typedef QList<DeviceInfo> DeviceList;
 
-  explicit DeviceProber(QObject* parent = 0);
-  DeviceList listDevices();
-  std::shared_ptr<FFBDevice> openDevice(const QString& path);
+  enum class DeviceInterfaces : unsigned int {
+    NONE,
+    LINUX,
+    SDL2
+  };
 
-private:
-  std::list<std::shared_ptr<FFBDevice>> m_openedDevices;
+  virtual void closeAllDevices() = 0;
+  virtual DeviceList listDevices() = 0;
+  virtual std::shared_ptr<FFBDevice> openDevice(const QString& id) = 0;
 
-  static const QString DEVICE_NODES_PATH;
-  static const QString res_ffbdeviceErrCap;
+  const DeviceInterfaces type;
 
-signals:
-
-public slots:
-
+protected:
+  explicit DeviceProber() : type(DeviceInterfaces::NONE) {}
 };
 
+
 #endif // DEVICEPROBER_H
+

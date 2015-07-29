@@ -24,15 +24,18 @@ class MainWindow : public QMainWindow
   Q_OBJECT
 
 public:
-  explicit MainWindow(std::shared_ptr<DeviceProber> prober, const QString& title, QWidget* parent = 0);
+  explicit MainWindow(const QString& title, QWidget* parent = 0);
   ~MainWindow();
 
 private:
-  enum class ErrorMessages { BAD_EFFECT_SLOT,
-                             CANT_REMOVE_EFFECT,
-                             CANT_START_EFFECT,
-                             CANT_UPLOAD_EFFECT };
+  enum class ErrorMessages {
+    BAD_EFFECT_SLOT,
+    CANT_REMOVE_EFFECT,
+    CANT_START_EFFECT,
+    CANT_UPLOAD_EFFECT
+  };
 
+  void createDeviceProber(const DeviceProber::DeviceInterfaces iface);
   EffectSettings* effectSettingsByType(FFBEffectTypes type);
   QString effectTypeToEffectName(const FFBEffectTypes type) const;
   void fillDeviceList();
@@ -48,10 +51,10 @@ private:
   std::shared_ptr<FFBDevice> m_activeDevice;
   ConditionEffectSettings* m_conditionEffSet;
   ConstantEffectSettings* m_constantEffSet;
+  std::shared_ptr<DeviceProber> m_prober;
   PeriodicEffectSettings* m_periodicEffSet;
   RampEffectSettings* m_rampEffSet;
   RumbleEffectSettings* m_rumbleEffSet;
-  std::shared_ptr<DeviceProber> m_prober;
   Ui::MainWindow* ui;
 
   static const QString res_deviceErrorCap;
@@ -64,6 +67,7 @@ private slots:
   void onDeviceSelected(const int cboxIdx);
   void onEffectSlotSelected(const int cboxIdx);
   void onEffectTypeSelected(const int cboxIdx);
+  void onInterfaceSelected(const int cboxIdx);
   void onRefreshDevicesClicked();
   void onRemoveEffectClicked();
   void onStartEffectClicked();

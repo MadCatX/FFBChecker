@@ -26,8 +26,7 @@ int main(int argc, char** argv)
    GlobalSettings::init(doSanityChecks);
   }
 
-  std::shared_ptr<DeviceProber> prober(new DeviceProber);
-  MainWindow* mWin = new MainWindow(prober, VERSION_STRING);
+  MainWindow* mWin = new MainWindow(VERSION_STRING);
 
   mWin->show();
   return myApp.exec();
