@@ -1,5 +1,5 @@
-#ifndef LinuxFFBEFFECTFACTORY_H
-#define FFBEFFECTFACTORY_H
+#ifndef LINUXFFBEFFECTFACTORY_H
+#define LINUXFFBEFFECTFACTORY_H
 
 #include "globals.h"
 #include "linuxffbconditioneffect.h"
@@ -19,4 +19,4 @@ private:
 
 };
 
-#endif // FFBEFFECTFACTORY_H
+#endif // LINUXFFBEFFECTFACTORY_H
