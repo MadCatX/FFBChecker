@@ -1,5 +1,6 @@
 #include "globalsettings.h"
 #include "linuxdeviceprober.h"
+#include "sdl2deviceprober.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QMessageBox>
@@ -35,7 +36,8 @@ MainWindow::MainWindow(const QString& title, QWidget* parent) :
   /* Fill the list of available interfaces */
   ui->cbox_interfaces->addItem("Linux API", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::LINUX));
 #ifdef FFBC_HAVE_SDL2
-  ui->cbox_interfaces->addItem("SDL2", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::SDL2));
+  if (SDL2DeviceProber::initializeSDL())
+    ui->cbox_interfaces->addItem("SDL2", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::SDL2));
 #endif
 
   ui->cbox_interfaces->setCurrentIndex(0);
@@ -68,6 +70,11 @@ bool MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
   case DeviceProber::DeviceInterfaces::LINUX:
     prober = std::make_shared<LinuxDeviceProber>();
     break;
+#ifdef FFBC_HAVE_SDL2
+  case DeviceProber::DeviceInterfaces::SDL2:
+    prober = std::make_shared<SDL2DeviceProber>();
+    break;
+#endif
   default:
     QMessageBox::critical(this, "Cannot probe devices", "Selected interface is not supported yet.");
     break;

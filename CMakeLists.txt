@@ -49,7 +49,8 @@ set(FFBChecker_SRCS
     mainwindow.cpp
     periodiceffectsettings.cpp
     rampeffectsettings.cpp
-    rumbleeffectsettings.cpp)
+    rumbleeffectsettings.cpp
+    sdl2deviceprober.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 if (SDL2_FOUND)
