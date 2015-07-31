@@ -58,6 +58,7 @@ if (SDL2_FOUND)
         sdl2ffbdevice.cpp
         sdl2ffbeffect.cpp
         sdl2ffbconstanteffect.cpp
+        sdl2ffbconditioneffect.cpp
         sdl2deviceprober.cpp)
 endif()
 

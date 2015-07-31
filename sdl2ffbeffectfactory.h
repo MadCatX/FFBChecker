@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "ffbnulleffect.h"
 #include "sdl2ffbconstanteffect.h"
+#include "sdl2ffbconditioneffect.h"
 
 class SDL2FFBEffectFactory
 {
