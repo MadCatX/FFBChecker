@@ -82,6 +82,7 @@ std::shared_ptr<FFBDevice> LinuxDeviceProber::openDevice(const QString& id)
   std::shared_ptr<LinuxFFBDevice> device(new LinuxFFBDevice(fd, maxEffectCount, id));
   if (!device->queryDeviceCapabilities()) {
     QMessageBox::critical(nullptr, res_ffbdeviceErrCap, "Unable to query device capabilities.");
+    device->close();
     return nullptr;
   }
 
