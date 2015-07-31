@@ -23,7 +23,13 @@ const QString SDL2FFBEffect::CAPTION("Invalid FFB parameter");
 
 SDL_HapticEffect* SDL2FFBEffect::createFFstruct()
 {
-  return new SDL_HapticEffect;
+  SDL_HapticEffect* effect = new SDL_HapticEffect;
+  if (effect == nullptr)
+    return nullptr;
+
+  memset(effect, 0, sizeof(SDL_HapticEffect));
+
+  return effect;
 }
 
 bool SDL2FFBEffect::checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel)
