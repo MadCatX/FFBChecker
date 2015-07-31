@@ -20,7 +20,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(FFBChecker_SRCS sdl2ffbeffectfactory.cpp sdl2ffbdevice.cpp
+set(FFBChecker_SRCS
     conditioneffectsettings.cpp
     constanteffectsettings.cpp
     effectsettings.cpp
@@ -49,8 +49,15 @@ set(FFBChecker_SRCS sdl2ffbeffectfactory.cpp sdl2ffbdevice.cpp
     mainwindow.cpp
     periodiceffectsettings.cpp
     rampeffectsettings.cpp
-    rumbleeffectsettings.cpp
-    sdl2deviceprober.cpp)
+    rumbleeffectsettings.cpp)
+
+if (SDL2_FOUND)
+    set(FFBChecker_SRCS
+        ${FFBChecker_SRCS}
+        sdl2ffbeffectfactory.cpp
+        sdl2ffbdevice.cpp
+        sdl2deviceprober.cpp)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 if (SDL2_FOUND)
