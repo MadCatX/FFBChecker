@@ -14,9 +14,7 @@ class LinuxFFBEffectFactory
 public:
   static std::shared_ptr<FFBEffect> createEffect(FFBEffectTypes type);
 
-private:
-  LinuxFFBEffectFactory() {};
-
+  LinuxFFBEffectFactory() = delete;
 };
 
 #endif // LINUXFFBEFFECTFACTORY_H
