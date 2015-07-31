@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "ffbnulleffect.h"
+#include "sdl2ffbconstanteffect.h"
 
 class SDL2FFBEffectFactory
 {

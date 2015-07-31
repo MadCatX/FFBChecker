@@ -46,7 +46,7 @@ bool LinuxFFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParam
     return false;
   }
 
-  if (!checkBoundsInclusive(params->replayLength, 0, 0x7FFF)) {
+  if (!checkBoundsInclusive(params->replayLength, static_cast<int64_t>(0), static_cast<int64_t>(0x7FFF))) {
     reportError("Replay length out of bounds.");
     return false;
   }

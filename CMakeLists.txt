@@ -56,6 +56,8 @@ if (SDL2_FOUND)
         ${FFBChecker_SRCS}
         sdl2ffbeffectfactory.cpp
         sdl2ffbdevice.cpp
+        sdl2ffbeffect.cpp
+        sdl2ffbconstanteffect.cpp
         sdl2deviceprober.cpp)
 endif()
 

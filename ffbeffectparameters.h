@@ -19,7 +19,7 @@ public:
   int direction;
   int repeat;
   int replayDelay;
-  int replayLength;
+  int64_t replayLength;
 };
 
 #endif // FFBEFFECTPARAMETERS_H
