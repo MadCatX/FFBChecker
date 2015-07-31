@@ -3,6 +3,8 @@
 
 #include "deviceprober.h"
 #include "SDL.h"
+#include "sdl2ffbdevice.h"
+#include <list>
 
 class SDL2DeviceProber : public DeviceProber
 {
@@ -15,6 +17,8 @@ public:
   std::shared_ptr<FFBDevice> openDevice(const QString& id);
 
 private:
+  std::list<std::shared_ptr<SDL2FFBDevice>> m_openedDevices;
+
   static bool s_SDLInited;
 
 

@@ -20,7 +20,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(FFBChecker_SRCS
+set(FFBChecker_SRCS sdl2ffbeffectfactory.cpp sdl2ffbdevice.cpp
     conditioneffectsettings.cpp
     constanteffectsettings.cpp
     effectsettings.cpp

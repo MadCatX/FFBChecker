@@ -30,38 +30,23 @@ void SDL2DeviceProber::closeAllDevices()
   return;
 }
 
-
 DeviceProber::DeviceList SDL2DeviceProber::listDevices()
 {
   DeviceProber::DeviceList devList;
-  int numJoy;
+  int numHapt;
 
   if (!s_SDLInited)
     return devList;
 
-  numJoy = SDL_NumJoysticks();
+  numHapt = SDL_NumHaptics();
 
-  for (int idx = 0; idx < numJoy; idx++) {
+  for (int idx = 0; idx < numHapt; idx++) {
     DeviceProber::DeviceInfo dinfo;
 
-    SDL_Joystick* joystick = SDL_JoystickOpen(idx);
-
-    if (joystick == nullptr) {
-      qDebug() << "SDL2: Cannot open joystick at idx" << idx;
-      continue;
-    }
-
-    if (SDL_JoystickIsHaptic(joystick) != 1) {
-      qDebug() << "SDL2: Joystick at idx" << idx << "does not support force feedback";
-      SDL_JoystickClose(joystick);
-      continue;
-    }
-
-    dinfo.name = QString(SDL_JoystickName(joystick));
+    dinfo.name = QString(SDL_HapticName(idx));
     dinfo.id = QVariant(idx);
 
     devList.push_back(dinfo);
-    SDL_JoystickClose(joystick);
   }
 
   return devList;
@@ -69,9 +54,39 @@ DeviceProber::DeviceList SDL2DeviceProber::listDevices()
 
 std::shared_ptr<FFBDevice> SDL2DeviceProber::openDevice(const QString& id)
 {
+  SDL_Haptic* haptic;
+  std::shared_ptr<SDL2FFBDevice> device;
+  int idx;
+  int maxEffectCount;
+  bool ok;
+
   if (!s_SDLInited)
     return nullptr;
 
-  return nullptr;
+  idx = id.toInt(&ok);
+  if (!ok)
+    return nullptr;
+
+  haptic = SDL_HapticOpen(idx);
+  if (haptic == nullptr)
+    return nullptr;
+
+  maxEffectCount = SDL_HapticNumEffects(haptic);
+  if (maxEffectCount < 1) {
+    QMessageBox::critical(nullptr, "SDL2 device error", "Maximum effect count for this device is zero.");
+    SDL_HapticClose(haptic);
+    return nullptr;
+  }
+
+  device = std::make_shared<SDL2FFBDevice>(haptic, maxEffectCount);
+  if (!device->queryDeviceCapabilities()) {
+    QMessageBox::critical(nullptr, "SDL2 device error", "Unable to query device capabilities.");
+    device->close();
+    return nullptr;
+  }
+
+  m_openedDevices.push_back(device);
+  return device;
 }
+
 
