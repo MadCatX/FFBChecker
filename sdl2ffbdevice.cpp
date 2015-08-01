@@ -138,8 +138,10 @@ bool SDL2FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::s
   if (sdlEff->parameters()->repeat == 0) {
     if (sdlEff->parameters()->replayLength > 0)
       repeat = SDL_HAPTIC_INFINITY;
+    else
+      repeat = 1;
   } else
-    repeat = 1;
+    repeat = sdlEff->parameters()->repeat;
 
   if (SDL_HapticRunEffect(c_haptic, sdlEff->internalIdx(), repeat) < 0) {
     QMessageBox::warning(nullptr, "SDL2 error", QString("Unable to start the effect:\n%1").arg(SDL_GetError()));
