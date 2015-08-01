@@ -65,8 +65,8 @@ bool SDL2FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParame
   if (!GlobalSettings::GS()->doSanityChecks)
     return true;
 
-  if (!checkBoundsInclusive(params->direction, 0, 35999)) {
-    QMessageBox::warning(nullptr, CAPTION, "Direction must be within <0; 35999)");
+  if (!checkBoundsInclusive(params->direction, 0, 36000)) {
+    QMessageBox::warning(nullptr, CAPTION, "Direction must be within <0; 36000)");
     return false;
   }
 

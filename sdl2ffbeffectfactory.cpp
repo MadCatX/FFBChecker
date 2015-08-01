@@ -9,6 +9,8 @@ std::shared_ptr<FFBEffect> SDL2FFBEffectFactory::createEffect(FFBEffectTypes typ
       return std::shared_ptr<SDL2FFBEffect>(new SDL2FFBConditionEffect());
     case FFBEffectTypes::CONSTANT:
       return std::shared_ptr<SDL2FFBEffect>(new SDL2FFBConstantEffect());
+    case FFBEffectTypes::PERIODIC:
+      return std::shared_ptr<SDL2FFBEffect>(new SDL2FFBPeriodicEffect());
     default:
       return std::shared_ptr<FFBEffect>(new FFBNullEffect());
   }
