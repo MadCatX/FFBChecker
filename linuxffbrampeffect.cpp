@@ -38,39 +38,23 @@ bool LinuxFFBRampEffect::setParameters(const std::shared_ptr<FFBEffectParameters
 
 bool LinuxFFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParameters> params)
 {
+  if (!GlobalSettings::GS()->doSanityChecks)
+    return true;
+
   if (!checkGenericParameters(params))
     return false;
 
-  if (GlobalSettings::GS()->doSanityChecks) {
-    if (!checkBoundsInclusive(params->attackLength, 0, 0x7FFF)) {
-      reportError("Attack length out of bounds.");
-      return false;
-    }
+  if (!checkEnvelopeParameters(params->attackLength, params->attackLevel, params->fadeLength, params->fadeLevel))
+    return false;
 
-    if (!checkBoundsInclusive(params->attackLevel, 0, 0x7FFF)) {
-      reportError("Attack level out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->endLevel, -0x7FFF, 0x7FFF)) {
+    reportError("End level must be within <-32767; 32767>");
+    return false;
+  }
 
-    if (!checkBoundsInclusive(params->fadeLength, 0, 0x7FFF)) {
-      reportError("Fade length out of bounds.");
-      return false;
-    }
-
-    if (!checkBoundsInclusive(params->fadeLevel, 0, 0x7FFF)) {
-      reportError("Fade level out of bounds.");
-      return false;
-    }
-
-    if (!checkBoundsInclusive(params->endLevel, -0x7FFF, 0x7FFF)) {
-      reportError("End level out of bounds");
-      return false;
-    }
-
-    if (!checkBoundsInclusive(params->startLevel, -0x7FFF, 0x7FFF)) {
-        reportError("Start level out of bounds");
-        return false;
-    }
+  if (!checkBoundsInclusive(params->startLevel, -0x7FFF, 0x7FFF)) {
+    reportError("Start level must be within <-32767; 32767>");
+    return false;
   }
 
   m_params = params;

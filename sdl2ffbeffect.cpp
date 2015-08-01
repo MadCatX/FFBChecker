@@ -1,6 +1,5 @@
 #include "sdl2ffbeffect.h"
 #include "globalsettings.h"
-#include <QtWidgets/QMessageBox>
 
 SDL_HapticEffect* SDL2FFBEffect::createFFstruct()
 {
@@ -19,22 +18,22 @@ bool SDL2FFBEffect::checkEnvelopeParameters(const int attackLength, const int at
     return true;
 
   if (!checkBoundsInclusive(attackLength, 0, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Attack length must be within <0; 32767>");
+    reportError("Attack length must be within <0; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(attackLevel, 0, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Attack level must be within <0; 32767>");
+    reportError("Attack level must be within <0; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(fadeLength, 0, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Fade length must be within <0; 32767>");
+    reportError("Fade length must be within <0; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(fadeLevel, 0, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Fade level must be within <0; 32767>");
+    reportError("Fade level must be within <0; 32767>");
     return false;
   }
 
@@ -47,17 +46,17 @@ bool SDL2FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParame
     return true;
 
   if (!checkBoundsInclusive(params->direction, 0, 36000)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Direction must be within <0; 36000)");
+    reportError("Direction must be within <0; 36000)");
     return false;
   }
 
   if (!checkBoundsInclusive(params->replayLength, static_cast<int64_t>(0), static_cast<int64_t>(0x7FFF))) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Replay length must be within <0; 32767>");
+    reportError("Replay length must be within <0; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->replayDelay, 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Replay delay must be within <0; 65535>");
+    reportError("Replay delay must be within <0; 65535>");
     return false;
   }
 

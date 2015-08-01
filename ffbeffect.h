@@ -20,7 +20,9 @@ public:
   virtual bool operator!=(const FFBEffect&) const;
 
 protected:
+  virtual bool checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel) = 0;
   virtual bool checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params) = 0;
+  void reportError(const QString& errorMsg) const;
 
   static const QString PRERR_CAPTION;
 

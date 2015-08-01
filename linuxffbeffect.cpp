@@ -1,6 +1,5 @@
 #include "linuxffbeffect.h"
 #include "globalsettings.h"
-#include <QtWidgets/QMessageBox>
 
 LinuxFFBEffect::LinuxFFBEffect(FFBEffectTypes type) :
   FFBEffect(type)
@@ -21,9 +20,32 @@ struct ff_effect* LinuxFFBEffect::createFFStruct(const std::shared_ptr<FFBEffect
   return eff;
 }
 
-void LinuxFFBEffect::reportError(const QString& errorMsg) const
+bool LinuxFFBEffect::checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel)
 {
-  QMessageBox::warning(nullptr, "FFB effect error", errorMsg);
+  if (!GlobalSettings::GS()->doSanityChecks)
+    return true;
+
+  if (!checkBoundsInclusive(attackLength, 0, 0x7FFF)) {
+    reportError("Attack length must be within <0; 32767>");
+    return false;
+  }
+
+  if (!checkBoundsInclusive(attackLevel, 0, 0x7FFF)) {
+    reportError("Attack level must be within <0; 32767>");
+    return false;
+  }
+
+  if (!checkBoundsInclusive(fadeLength, 0, 0x7FFF)) {
+    reportError("Fade length must be within <0; 32767>");
+    return false;
+  }
+
+  if (!checkBoundsInclusive(fadeLevel, 0, 0x7FFF)) {
+    reportError("Fade level must be within <0; 32767>");
+    return false;
+  }
+
+  return true;
 }
 
 bool LinuxFFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params)
@@ -37,17 +59,17 @@ bool LinuxFFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParam
   }
 
   if (!checkBoundsInclusive(params->direction, 0, 0xFFFF)) {
-    reportError("Direction out of bounds.");
+    reportError("Direction must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->replayDelay, 0, 0x7FFF)) {
-    reportError("Replay delay out of bounds.");
+    reportError("Replay delay must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->replayLength, static_cast<int64_t>(0), static_cast<int64_t>(0x7FFF))) {
-    reportError("Replay length out of bounds.");
+    reportError("Replay length must be within <0; 32767>");
     return false;
   }
 

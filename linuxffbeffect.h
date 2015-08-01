@@ -13,8 +13,8 @@ public:
 
 protected:
   struct ff_effect* createFFStruct(const std::shared_ptr<FFBEffectParameters> params);
+  bool checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel);
   bool checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params);
-  void reportError(const QString& errorMsg) const;
 
 private:
 

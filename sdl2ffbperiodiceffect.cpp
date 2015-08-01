@@ -1,6 +1,5 @@
 #include "sdl2ffbperiodiceffect.h"
 #include "globalsettings.h"
-#include <QtWidgets/QMessageBox>
 
 SDL2FFBPeriodicEffect::SDL2FFBPeriodicEffect() :
   SDL2FFBEffect(FFBEffectTypes::PERIODIC)
@@ -75,28 +74,28 @@ bool SDL2FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffec
     return false;
 
   if (!checkBoundsInclusive(params->period, 0, 36000)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Period must be within <0; 36000>");
+    reportError("Period must be within <0; 36000>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Magnitude must be within <-32767; 32767>");
+    reportError("Magnitude must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Offset must be within <-32767; 32767>");
+    reportError("Offset must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->phase, 0, 36000)) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Phase must be withing <0; 36000>");
+    reportError("Phase must be withing <0; 36000>");
     return false;
   }
 
   if (params->waveform == PeriodicWaveforms::NONE ||
       params->waveform == PeriodicWaveforms::SQUARE) {
-    QMessageBox::warning(nullptr, PRERR_CAPTION, "Unsupported waveform");
+    reportError("Invalid or unsupported waveform");
     return false;
   }
 

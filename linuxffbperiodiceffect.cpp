@@ -60,54 +60,38 @@ bool LinuxFFBPeriodicEffect::setParameters(const std::shared_ptr<FFBEffectParame
 
 bool LinuxFFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffectParameters> params)
 {
+  if (!GlobalSettings::GS()->doSanityChecks)
+    return true;
+
   if (!checkGenericParameters(params))
     return false;
 
-  if (GlobalSettings::GS()->doSanityChecks) {
-    if (!checkBoundsInclusive(params->attackLength, 0, 0x7FFF)) {
-      reportError("Attack length out of bounds.");
-      return false;
-    }
+  if (!checkEnvelopeParameters(params->attackLength, params->attackLevel, params->fadeLength, params->fadeLevel))
+    return false;
 
-    if (!checkBoundsInclusive(params->attackLevel, 0, 0x7FFF)) {
-      reportError("Attack level out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
+    reportError("Magnitude must be within <-32767; 32767>");
+    return false;
+  }
 
-    if (!checkBoundsInclusive(params->fadeLength, 0, 0x7FFF)) {
-      reportError("Fade length out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
+    reportError("Offset must be within <32767; 32767>");
+    return false;
+  }
 
-    if (!checkBoundsInclusive(params->fadeLevel, 0, 0x7FFF)) {
-      reportError("Fade level out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->period, 0, 0x7FFF)) {
+    reportError("Period must be within <0; 32767>");
+    return false;
+  }
 
-    if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
-      reportError("Magnitude out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->phase, 0, 0x7FFF)) {
+    reportError("Phase must be within <0; 32767>");
+    return false;
+  }
 
-    if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
-      reportError("Offset out of bounds.");
-      return false;
-    }
-
-    if (!checkBoundsInclusive(params->period, 0, 0x7FFF)) {
-      reportError("Period out of bounds.");
-      return false;
-    }
-
-    if (!checkBoundsInclusive(params->phase, 0, 0x7FFF)) {
-      reportError("Phase out of bounds.");
-      return false;
-    }
-
-    if (params->waveform == PeriodicWaveforms::NONE) {
-      reportError("Invalid waveform type.");
-      return false;
-    }
+  if (params->waveform == PeriodicWaveforms::NONE) {
+    reportError("Invalid waveform type.");
+    return false;
   }
 
   m_params = params;

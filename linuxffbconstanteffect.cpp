@@ -34,30 +34,18 @@ bool LinuxFFBConstantEffect::setParameters(const std::shared_ptr<FFBEffectParame
 
 bool LinuxFFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffectParameters> params)
 {
+  if (!GlobalSettings::GS()->doSanityChecks)
+    return true;
+
   if (!checkGenericParameters(params))
     return false;
 
-  if (GlobalSettings::GS()->doSanityChecks) {
-    if (!checkBoundsInclusive(params->attackLength, 0, 0x7FFF)){
-      reportError("Attack length out of bounds");
-      return false;
-    }
-    if (!checkBoundsInclusive(params->attackLevel, 0, 0x7FFF)) {
-      reportError("Attack level out of bounds");
-      return false;
-    } if (!checkBoundsInclusive(params->fadeLength, 0, 0x7FFF)) {
-      reportError("Fade length out of bounds");
-      return false;
-    }
-    if (!checkBoundsInclusive(params->fadeLevel, 0, 0x7FFF)) {
-      reportError("Fade level out of bounds");
-      return false;
-    }
+  if (!checkEnvelopeParameters(params->attackLength, params->attackLevel, params->fadeLength, params->fadeLevel))
+    return false;
 
-    if (!checkBoundsInclusive(params->level, -0x7FFF, 0x7FFF)) {
-      reportError("Level out of bounds.");
-      return false;
-    }
+  if (!checkBoundsInclusive(params->level, -0x7FFF, 0x7FFF)) {
+    reportError("Level out of bounds.");
+    return false;
   }
 
   m_params = params;

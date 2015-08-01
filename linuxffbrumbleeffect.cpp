@@ -33,12 +33,12 @@ bool LinuxFFBRumbleEffect::setParameters(const std::shared_ptr<FFBRumbleEffectPa
     return false;
 
   if (!checkBoundsInclusive(params->strongMagnitude, 0, 0xFFFF)) {
-    reportError("Strong magnitude out of bounds");
+    reportError("Strong magnitude must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->weakMagnitude, 0, 0xFFFF)) {
-    reportError("Weak magnitude out of bounds");
+    reportError("Weak magnitude must be within <0; 65535>");
     return false;
   }
 

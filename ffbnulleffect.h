@@ -11,6 +11,11 @@ public:
   inline bool setParameters(const std::shared_ptr<FFBEffectParameters> params) { (void)(params); return false; }
 
 protected:
+  bool checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel)
+  {
+    Q_UNUSED(attackLength); Q_UNUSED(attackLevel); Q_UNUSED(fadeLength); Q_UNUSED(fadeLevel);
+    return false;
+  }
   bool checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params) { Q_UNUSED(params); return false; }
 };
 
