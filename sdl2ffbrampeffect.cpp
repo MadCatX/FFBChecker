@@ -18,6 +18,11 @@ SDL_HapticEffect* SDL2FFBRampEffect::createFFstruct()
   effect->ramp.direction.type = SDL_HAPTIC_POLAR;
   effect->ramp.direction.dir[0] = m_params->direction;
 
+  if (m_params->replayLength == 0)
+    effect->ramp.length = SDL_HAPTIC_INFINITY;
+  else
+    effect->ramp.length = m_params->replayLength;
+
   effect->ramp.attack_length = m_params->attackLength;
   effect->ramp.attack_level = m_params->attackLevel;
   effect->ramp.fade_length = m_params->fadeLength;
