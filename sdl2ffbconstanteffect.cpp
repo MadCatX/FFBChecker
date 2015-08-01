@@ -12,7 +12,6 @@ SDL_HapticEffect* SDL2FFBConstantEffect::createFFstruct()
     return nullptr;
 
   effect->type = SDL_HAPTIC_CONSTANT;
-  effect->constant.type = SDL_HAPTIC_CONSTANT;
   effect->constant.direction.type = SDL_HAPTIC_POLAR;
   effect->constant.direction.dir[0] = m_params->direction;
 
