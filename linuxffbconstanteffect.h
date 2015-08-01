@@ -11,9 +11,10 @@ public:
   struct ff_effect* createFFStruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
-  bool setParameters(const std::shared_ptr<FFBConstantEffectParameters> params);
 
 private:
+  bool setParameters(const std::shared_ptr<FFBConstantEffectParameters> params);
+
   std::shared_ptr<FFBConstantEffectParameters> m_params;
 };
 
