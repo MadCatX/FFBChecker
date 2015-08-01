@@ -53,6 +53,7 @@ MainWindow::MainWindow(const QString& title, QWidget* parent) :
   connect(ui->cbox_interfaces, SIGNAL(activated(int)), this, SLOT(onInterfaceSelected(const int)));
   connect(ui->qpb_refreshDevices, SIGNAL(clicked()), this, SLOT(onRefreshDevicesClicked()));
   connect(ui->qpb_remove, SIGNAL(clicked()), this, SLOT(onRemoveEffectClicked()));
+  connect(ui->qpb_setGain, SIGNAL(clicked()), this, SLOT(onSetGainClicked()));
   connect(ui->qpb_start, SIGNAL(clicked()), this, SLOT(onStartEffectClicked()));
   connect(ui->qpb_stop, SIGNAL(clicked()), this, SLOT(onStopEffectClicked()));
   connect(ui->qpb_upload, SIGNAL(clicked()), this, SLOT(onUploadEffectClicked()));
@@ -270,6 +271,23 @@ void MainWindow::onRemoveEffectClicked()
     showErrorMsgBox(ErrorMessages::CANT_REMOVE_EFFECT);
   else
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectIdx));
+}
+
+void MainWindow::onSetGainClicked()
+{
+  bool ok;
+  int gain;
+
+  if (m_activeDevice == nullptr)
+    return;
+
+  gain = ui->qle_gain->text().toInt(&ok);
+  if (!ok) {
+    QMessageBox::warning(this, res_inputFormatErrCap, "Invalid gain value");
+    return;
+  }
+
+  m_activeDevice->setGain(gain);
 }
 
 void MainWindow::onStartEffectClicked()

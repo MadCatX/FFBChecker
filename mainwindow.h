@@ -70,6 +70,7 @@ private slots:
   void onInterfaceSelected(const int cboxIdx);
   void onRefreshDevicesClicked();
   void onRemoveEffectClicked();
+  void onSetGainClicked();
   void onStartEffectClicked();
   void onStopEffectClicked();
   void onUploadEffectClicked();

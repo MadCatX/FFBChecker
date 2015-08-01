@@ -14,6 +14,7 @@ public:
   void close();
   bool queryDeviceCapabilities();
   bool removeAndEraseEffect(const int idx);
+  bool setGain(const int gain);
   bool startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
   bool stopEffect(const int idx);
   bool uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
@@ -30,6 +31,8 @@ private:
   static inline bool testBit(unsigned long bit, unsigned long* array) { return (array[longIdx(bit)] >> offset(bit)) & 1; }
 
   static const quint8 BITS_PER_LONG;
+  static const QString LNXDEV_ERR_CAPTION;
+
 signals:
 
 public slots:

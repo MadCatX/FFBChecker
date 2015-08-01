@@ -10,6 +10,7 @@
 #define CHECK_EFFECT_IDX(idx) if (idx < 0 || idx > c_maxEffectCount) return false
 
 const quint8 LinuxFFBDevice::BITS_PER_LONG = sizeof(unsigned long) * 8;
+const QString LinuxFFBDevice::LNXDEV_ERR_CAPTION("Linux FFB device");
 
 LinuxFFBDevice::LinuxFFBDevice(const int fd, const int maxEffectCount, const QString path) :
   FFBDevice(maxEffectCount),
@@ -74,6 +75,10 @@ bool LinuxFFBDevice::queryDeviceCapabilities()
   if (testBit(FF_INERTIA, caps))
     m_availableConditionSubtypes.push_back(ConditionSubtypes::INERTIA);
 
+  /* Query device-wide capabilities */
+  if (testBit(FF_GAIN, caps))
+    m_adjustableGain = true;
+
   return true;
 }
 
@@ -115,6 +120,35 @@ bool LinuxFFBDevice::removeEffect(const int idx)
   return true;
 }
 
+bool LinuxFFBDevice::setGain(const int gain)
+{
+  struct input_event evt;
+  int ret;
+
+  if (!m_adjustableGain) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, "Device does not have adjustable gain");
+    return false;
+  }
+
+  if (gain < 0 || gain > 0xFFFF) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, "Gain must be within <0; 65535>");
+    return false;
+  }
+
+  evt.type = EV_FF;
+  evt.code = FF_GAIN;
+  evt.value = gain;
+
+  ret = write(c_fd, &evt, sizeof(struct input_event));
+  if (ret != sizeof(struct input_event)) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, QString("Unable to set gain"));
+    return false;
+  }
+
+  return true;
+}
+
+
 bool LinuxFFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
   std::shared_ptr<LinuxFFBEffect> linEff;
@@ -139,7 +173,7 @@ bool LinuxFFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::
 
   ret = write(c_fd, &evt, sizeof(struct input_event));
   if (ret != sizeof(struct input_event)) {
-    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been started, error code: " + QString::number(ret));
+    QMessageBox::critical(nullptr, LNXDEV_ERR_CAPTION, "Effect could not have been started, error code: " + QString::number(ret));
     qDebug() << "Effect not started" << ret;
     return false;
   }
@@ -213,7 +247,7 @@ bool LinuxFFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std:
 
     if (*m_effects[idx] != *linEff) {
       if (!removeEffect(idx)) {
-        QMessageBox::critical(nullptr, "FFB Device", "Unable to remove effect");
+        QMessageBox::critical(nullptr, LNXDEV_ERR_CAPTION, "Unable to remove effect");
         return false;
       }
       linEff->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
@@ -227,14 +261,14 @@ bool LinuxFFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std:
 
   kernelEff = linEff->createFFStruct();
   if (kernelEff == nullptr) {
-    QMessageBox::critical(nullptr, "FFB Device", "ff_effect struct could not have been created. Effect not uploaded.");
+    QMessageBox::critical(nullptr, LNXDEV_ERR_CAPTION, "ff_effect struct could not have been created. Effect not uploaded.");
     qDebug() << "struct ff_effect not created";
     return false;
   }
 
   int ret = ioctl(c_fd, EVIOCSFF, kernelEff);
   if (ret < 0) {
-    QMessageBox::critical(nullptr, "FFB Device", "Effect could not have been uploaded, error code: " + QString::number(ret));
+    QMessageBox::critical(nullptr, LNXDEV_ERR_CAPTION, "Effect could not have been uploaded, error code: " + QString::number(ret));
     qDebug() << "Effect not uploaded" << ret;
     delete kernelEff;
     return false;

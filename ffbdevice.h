@@ -21,6 +21,7 @@ public:
   virtual void close() = 0;
   virtual bool queryDeviceCapabilities() = 0;
   virtual bool removeAndEraseEffect(const int idx) = 0;
+  virtual bool setGain(const int gain) = 0;
   virtual bool startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters) = 0;
   virtual bool stopEffect(const int idx) = 0;
   virtual bool uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters) = 0;
@@ -32,6 +33,8 @@ protected:
   std::vector<ConditionSubtypes> m_availableConditionSubtypes;
   std::vector<FFBEffectTypes> m_availableEffects;
   std::vector<PeriodicWaveforms> m_availablePeriodicWaveforms;
+  bool m_adjustableGain;
+
   std::vector<std::shared_ptr<FFBEffect>> m_effects;
 
   const int c_maxEffectCount;

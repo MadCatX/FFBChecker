@@ -5,6 +5,8 @@
 
 #define CHECK_EFFECT_IDX(idx) if (idx < 0 || idx > c_maxEffectCount) return false
 
+const QString SDL2FFBDevice::SDL2DEV_ERR_CAPTION("SDL2 device error");
+
 SDL2FFBDevice::SDL2FFBDevice(SDL_Haptic* haptic, const int maxEffectCount) :
     FFBDevice(maxEffectCount),
     c_haptic(haptic)
@@ -76,6 +78,9 @@ bool SDL2FFBDevice::queryDeviceCapabilities()
   if (hasCondition)
     m_availableEffects.push_back(FFBEffectTypes::CONDITION);
 
+  if (caps & SDL_HAPTIC_GAIN)
+    m_adjustableGain = true;
+
   return true;
 }
 
@@ -120,6 +125,26 @@ bool SDL2FFBDevice::removeAndEraseEffect(const int idx)
   return true;
 }
 
+bool SDL2FFBDevice::setGain(const int gain)
+{
+  if (!m_adjustableGain) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, "Device does not have adjustable gain");
+    return false;
+  }
+
+  if (gain < 0 || gain > 100) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, "Gain must be within <0; 100>");
+    return false;
+  }
+
+  if (SDL_HapticSetGain(c_haptic, gain) < 0) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to set gain:\n%1").arg(SDL_GetError()));
+    return false;
+  }
+
+  return true;
+}
+
 bool SDL2FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters)
 {
   std::shared_ptr<SDL2FFBEffect> sdlEff;
@@ -144,7 +169,7 @@ bool SDL2FFBDevice::startEffect(const int idx, const FFBEffectTypes type, std::s
     repeat = sdlEff->parameters()->repeat;
 
   if (SDL_HapticRunEffect(c_haptic, sdlEff->internalIdx(), repeat) < 0) {
-    QMessageBox::warning(nullptr, "SDL2 error", QString("Unable to start the effect:\n%1").arg(SDL_GetError()));
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to start the effect:\n%1").arg(SDL_GetError()));
     return false;
   }
 
@@ -165,7 +190,7 @@ bool SDL2FFBDevice::stopEffect(const int idx)
 
   sdlEff = std::static_pointer_cast<SDL2FFBEffect>(m_effects[idx]);
   if (SDL_HapticStopEffect(c_haptic, sdlEff->internalIdx()) < 0) {
-    QMessageBox::critical(nullptr, "SDL2 error", QString("Unable to stop the effect:\n%1").arg(SDL_GetError()));
+    QMessageBox::critical(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to stop the effect:\n%1").arg(SDL_GetError()));
     return false;
   }
 
@@ -217,7 +242,7 @@ bool SDL2FFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::
 
       intIdx = SDL_HapticUpdateEffect(c_haptic, std::static_pointer_cast<SDL2FFBEffect>(m_effects[idx])->internalIdx(), underlEff);
       if (intIdx < 0) {
-	QMessageBox::critical(nullptr, "SDL2 error", QString("Unable to update the effect:\n%1").arg(SDL_GetError()));
+	QMessageBox::critical(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to update the effect:\n%1").arg(SDL_GetError()));
 	m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
 	return true;
       }
@@ -236,7 +261,7 @@ bool SDL2FFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::
 
   intIdx = SDL_HapticNewEffect(c_haptic, underlEff);
   if (intIdx < 0) {
-    QMessageBox::critical(nullptr, "SDL2 error", QString("Unable to create effect:\n%1").arg(SDL_GetError()));
+    QMessageBox::critical(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to create effect:\n%1").arg(SDL_GetError()));
     return false;
   }
   sdlEff->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
