@@ -40,6 +40,11 @@ SDL_HapticEffect* SDL2FFBPeriodicEffect::createFFstruct()
 
   effect->periodic.delay = m_params->replayDelay;
 
+  effect->periodic.attack_length = m_params->attackLength;
+  effect->periodic.attack_level = m_params->attackLevel;
+  effect->periodic.fade_length = m_params->fadeLength;
+  effect->periodic.fade_level = m_params->fadeLevel;
+
   effect->periodic.period = m_params->period;
   effect->periodic.magnitude = m_params->magnitude;
   effect->periodic.offset = m_params->offset;
