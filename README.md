@@ -3,7 +3,7 @@ FFBChecker
 
 Description
 ---
-This tool of a very unimaginative name is mainly intended to test implementation of [Force Feedback](https://en.wikipedia.org/wiki/Haptic_technology) on Linux systems. It has a Qt5-based GUI that allows the user to set up parameters of the effects and play them back on their devices. Only Linux Force Feedback API is supported at the moment. Support for other interfaces ([SDL2](https://www.libsdl.org/), [DirectInput](https://msdn.microsoft.com/en-us/library/windows/desktop/ee418273(v=vs.85).aspx)) might be added in the future.
+This tool of a very unimaginative name is mainly intended to test implementation of [Force Feedback](https://en.wikipedia.org/wiki/Haptic_technology) on Linux systems. It has a Qt5-based GUI that allows the user to set up parameters of the effects and play them back on their devices. Only Linux Force Feedback API and SDL2 is supported at the moment. Support for other interfaces such as [DirectInput](https://msdn.microsoft.com/en-us/library/windows/desktop/ee418273(v=vs.85).aspx) might be added in the future.
 
 
 Usage
@@ -28,10 +28,10 @@ cd into the source directory and run:
 
 	mkdir build
 	cd build
-	../qmake
+	cmake ../ -DCMAKE_BUILD_TYPE=Release
 	make
 
-Note that some Linux distributions may provide `qmake-qt5` and `qmake-qt4` to target different version of the Qt framework. In such a case run `qmake-qt5` instead of qmake.
+Note that at least CMake 2.8.13 is required. SDL2 header files and PkgConfig are required to enable SDL2 support.
 
 To launch FFBChecker, run:
 
