@@ -40,7 +40,7 @@ set(FFBChecker_SRCS
     ffbperiodiceffectparameters.cpp
     linuxffbrampeffect.cpp
     ffbrampeffectparameters.cpp
-    ffbrumbleeffect.cpp
+    linuxffbrumbleeffect.cpp
     ffbrumbleeffectparameters.cpp
     globalsettings.cpp
     linuxdeviceprober.cpp
