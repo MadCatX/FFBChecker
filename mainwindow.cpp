@@ -1,10 +1,13 @@
 #include "globalsettings.h"
-#include "linuxdeviceprober.h"
-#include "sdl2deviceprober.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QMessageBox>
 #include <QDebug>
+
+#include "linuxdeviceprober.h"
+#ifdef FFBC_HAVE_SDL2
+#include "sdl2deviceprober.h"
+#endif
 
 const QString MainWindow::res_deviceErrorCap("Device error");
 const QString MainWindow::res_effectNotLoaded("Not loaded");
