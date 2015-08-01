@@ -7,7 +7,7 @@ SDL2FFBRampEffect::SDL2FFBRampEffect() :
 
 SDL_HapticEffect* SDL2FFBRampEffect::createFFstruct()
 {
-  SDL_HapticEffect* effect = SDL2FFBEffect::createFFstruct();
+  SDL_HapticEffect* effect = initFFstruct();
 
   if (effect == nullptr)
     return nullptr;

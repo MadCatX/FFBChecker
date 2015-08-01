@@ -5,13 +5,14 @@ SDL2FFBConstantEffect::SDL2FFBConstantEffect() :
   SDL2FFBEffect(FFBEffectTypes::CONSTANT)
 {}
 
-SDL_HapticEffect* SDL2FFBConstantEffect::createFFStruct()
+SDL_HapticEffect* SDL2FFBConstantEffect::createFFstruct()
 {
-  SDL_HapticEffect* effect = SDL2FFBEffect::createFFstruct();
+  SDL_HapticEffect* effect = initFFstruct();
   if (effect == nullptr)
     return nullptr;
 
   effect->type = SDL_HAPTIC_CONSTANT;
+  effect->constant.type = SDL_HAPTIC_CONSTANT;
   effect->constant.direction.type = SDL_HAPTIC_POLAR;
   effect->constant.direction.dir[0] = m_params->direction;
 
@@ -47,13 +48,13 @@ bool SDL2FFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffec
   if (!GlobalSettings::GS()->doSanityChecks)
     return true;
 
-  if (!checkGenericParameters(m_params))
+  if (!checkGenericParameters(params))
     return false;
 
-  if (!checkEnvelopeParameters(m_params->attackLength, m_params->attackLevel, m_params->fadeLength, m_params->fadeLevel))
+  if (!checkEnvelopeParameters(params->attackLength, params->attackLevel, params->fadeLength, params->fadeLevel))
     return false;
 
-  if (!checkBoundsInclusive(m_params->level, -0x7FFF, 0x7FFF)) {
+  if (!checkBoundsInclusive(params->level, -0x7FFF, 0x7FFF)) {
     reportError("Level parameters must be within <-32767; 32767>");
     return false;
   }

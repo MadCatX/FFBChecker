@@ -1,7 +1,7 @@
 #include "sdl2ffbeffect.h"
 #include "globalsettings.h"
 
-SDL_HapticEffect* SDL2FFBEffect::createFFstruct()
+SDL_HapticEffect* SDL2FFBEffect::initFFstruct()
 {
   SDL_HapticEffect* effect = new SDL_HapticEffect;
   if (effect == nullptr)
@@ -57,6 +57,11 @@ bool SDL2FFBEffect::checkGenericParameters(const std::shared_ptr<FFBEffectParame
 
   if (!checkBoundsInclusive(params->replayDelay, 0, 0xFFFF)) {
     reportError("Replay delay must be within <0; 65535>");
+    return false;
+  }
+
+  if (params->repeat < 0) {
+    reportError("Repeat count must be non-negative");
     return false;
   }
 

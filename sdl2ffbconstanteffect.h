@@ -8,7 +8,7 @@ class SDL2FFBConstantEffect :  public SDL2FFBEffect
 {
 public:
   explicit SDL2FFBConstantEffect();
-  SDL_HapticEffect* createFFStruct();
+  SDL_HapticEffect* createFFstruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
 

@@ -15,6 +15,8 @@ public:
   bool uploadEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
 
 private:
+  bool removeEffect(const int idx);
+
   SDL_Haptic* c_haptic;
 };
 

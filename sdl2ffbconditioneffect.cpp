@@ -7,7 +7,7 @@ SDL2FFBConditionEffect::SDL2FFBConditionEffect() :
 
 SDL_HapticEffect* SDL2FFBConditionEffect::createFFstruct()
 {
-  SDL_HapticEffect* effect = SDL2FFBEffect::createFFstruct();
+  SDL_HapticEffect* effect = initFFstruct();
   if (effect == nullptr)
     return nullptr;
 

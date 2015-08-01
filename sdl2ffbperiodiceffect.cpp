@@ -7,7 +7,7 @@ SDL2FFBPeriodicEffect::SDL2FFBPeriodicEffect() :
 
 SDL_HapticEffect* SDL2FFBPeriodicEffect::createFFstruct()
 {
-  SDL_HapticEffect* effect = SDL2FFBEffect::createFFstruct();
+  SDL_HapticEffect* effect = initFFstruct();
 
   if (effect == nullptr)
     return nullptr;
