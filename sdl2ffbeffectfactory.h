@@ -6,6 +6,7 @@
 #include "sdl2ffbconstanteffect.h"
 #include "sdl2ffbconditioneffect.h"
 #include "sdl2ffbperiodiceffect.h"
+#include "sdl2ffbrampeffect.h"
 
 class SDL2FFBEffectFactory
 {
