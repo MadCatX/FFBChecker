@@ -1,5 +1,5 @@
-#ifndef SDL2FFBPERIODIEFFECT_H
-#define SDL2FFBPERIODIEFFECT_H
+#ifndef SDL2FFBPERIODICEFFECT_H
+#define SDL2FFBPERIODICEFFECT_H
 
 #include "sdl2ffbeffect.h"
 #include "ffbperiodiceffectparameters.h"
@@ -18,4 +18,4 @@ private:
   std::shared_ptr<FFBPeriodicEffectParameters> m_params;
 };
 
-#endif // SDL2FFBEPERIODIFFECT_H
+#endif // SDL2FFBPERIODICEFFECT_H
