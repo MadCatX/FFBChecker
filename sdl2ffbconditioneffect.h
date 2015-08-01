@@ -12,6 +12,8 @@ public:
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
   bool setParameters(std::shared_ptr<FFBEffectParameters> params);
 
+  bool operator==(const FFBEffect& other) const;
+
 private:
   bool setParameters(std::shared_ptr<FFBConditionEffectParameters> params);
 

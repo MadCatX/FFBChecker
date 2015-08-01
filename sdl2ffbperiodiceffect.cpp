@@ -103,3 +103,16 @@ bool SDL2FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffec
   return true;
 }
 
+bool SDL2FFBPeriodicEffect::operator==(const FFBEffect& other) const
+{
+  if (this->type() != other.type())
+    return false;
+  else {
+    try {
+      const SDL2FFBPeriodicEffect& eff = dynamic_cast<const SDL2FFBPeriodicEffect&>(other);
+      return this->m_params->waveform == eff.m_params->waveform;
+    } catch(std::bad_cast&) {
+      return false;
+    }
+  }
+}

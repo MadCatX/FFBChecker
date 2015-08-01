@@ -135,4 +135,16 @@ bool SDL2FFBConditionEffect::setParameters(std::shared_ptr<FFBConditionEffectPar
   return true;
 }
 
-
+bool SDL2FFBConditionEffect::operator==(const FFBEffect& other) const
+{
+  if (this->type() != other.type())
+    return false;
+  else {
+    try {
+      const SDL2FFBConditionEffect& cother = dynamic_cast<const SDL2FFBConditionEffect&>(other);
+      return this->m_params->subtype == cother.m_params->subtype;
+    } catch (std::bad_cast&) {
+      return false;
+    }
+  }
+}
