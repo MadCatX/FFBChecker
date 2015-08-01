@@ -23,6 +23,8 @@ SDL_HapticEffect* SDL2FFBRampEffect::createFFstruct()
   else
     effect->ramp.length = m_params->replayLength;
 
+  effect->ramp.delay = m_params->replayDelay;
+
   effect->ramp.attack_length = m_params->attackLength;
   effect->ramp.attack_level = m_params->attackLevel;
   effect->ramp.fade_length = m_params->fadeLength;
