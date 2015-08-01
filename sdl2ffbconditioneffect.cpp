@@ -73,62 +73,62 @@ bool SDL2FFBConditionEffect::setParameters(std::shared_ptr<FFBConditionEffectPar
     return false;
 
   if (!checkBoundsInclusive(params->leftSat.at(FFBConditionEffectParameters::Axis::X), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Left X saturation must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Left X saturation must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->leftSat.at(FFBConditionEffectParameters::Axis::Y), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Left Y saturation must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Left Y saturation must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->rightSat.at(FFBConditionEffectParameters::Axis::X), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Right X saturation must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Right X saturation must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->rightSat.at(FFBConditionEffectParameters::Axis::Y), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Right Y saturation must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Right Y saturation must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->leftCoeff.at(FFBConditionEffectParameters::Axis::X), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Left X coefficient must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Left X coefficient must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->leftCoeff.at(FFBConditionEffectParameters::Axis::Y), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Left Y coefficient must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Left Y coefficient must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->rightCoeff.at(FFBConditionEffectParameters::Axis::X), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Right X coefficient must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Right X coefficient must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->rightCoeff.at(FFBConditionEffectParameters::Axis::Y), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Right Y coefficient must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Right Y coefficient must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->deadband.at(FFBConditionEffectParameters::Axis::X), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Deadband X must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Deadband X must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->deadband.at(FFBConditionEffectParameters::Axis::Y), 0, 0xFFFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Deadband Y must be within <0; 65535>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Deadband Y must be within <0; 65535>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->center.at(FFBConditionEffectParameters::Axis::X), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Center X must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Center X must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->center.at(FFBConditionEffectParameters::Axis::Y), -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Center Y must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Center Y must be within <-32767; 32767>");
     return false;
   }
 

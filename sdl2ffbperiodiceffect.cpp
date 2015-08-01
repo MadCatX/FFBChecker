@@ -75,28 +75,28 @@ bool SDL2FFBPeriodicEffect::setParameters(const std::shared_ptr<FFBPeriodicEffec
     return false;
 
   if (!checkBoundsInclusive(params->period, 0, 36000)) {
-    QMessageBox::warning(nullptr, CAPTION, "Period must be within <0; 36000>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Period must be within <0; 36000>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->magnitude, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Magnitude must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Magnitude must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->offset, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Offset must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Offset must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->phase, 0, 36000)) {
-    QMessageBox::warning(nullptr, CAPTION, "Phase must be withing <0; 36000>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Phase must be withing <0; 36000>");
     return false;
   }
 
   if (params->waveform == PeriodicWaveforms::NONE ||
       params->waveform == PeriodicWaveforms::SQUARE) {
-    QMessageBox::warning(nullptr, CAPTION, "Unsupported waveform");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Unsupported waveform");
     return false;
   }
 

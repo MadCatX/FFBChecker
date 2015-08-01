@@ -22,6 +22,8 @@ public:
 protected:
   virtual bool checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params) = 0;
 
+  static const QString PRERR_CAPTION;
+
 private:
   FFBEffectStatus m_status;
   FFBEffectTypes m_type;

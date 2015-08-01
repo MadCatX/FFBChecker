@@ -55,7 +55,7 @@ bool SDL2FFBConstantEffect::setParameters(const std::shared_ptr<FFBConstantEffec
     return false;
 
   if (!checkBoundsInclusive(m_params->level, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Level parameters must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Level parameters must be within <-32767; 32767>");
     return false;
   }
 

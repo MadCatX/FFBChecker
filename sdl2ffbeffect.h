@@ -13,8 +13,6 @@ public:
 protected:
   virtual bool checkGenericParameters(const std::shared_ptr<FFBEffectParameters> params);
   bool checkEnvelopeParameters(const int attackLength, const int attackLevel, const int fadeLength, const int fadeLevel);
-
-  static const QString CAPTION;
 };
 
 #endif // SDL2FFBEFFECT_H

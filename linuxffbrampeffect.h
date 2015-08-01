@@ -18,4 +18,4 @@ private:
   std::shared_ptr<FFBRampEffectParameters> m_params;
 };
 
-#endif // FFBRAMPEFFECT_H
+#endif // LINUXFFBRAMPEFFECT_H

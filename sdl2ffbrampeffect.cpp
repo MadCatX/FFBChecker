@@ -58,12 +58,12 @@ bool SDL2FFBRampEffect::setParameters(const std::shared_ptr<FFBRampEffectParamet
     return false;
 
   if (checkBoundsInclusive(params->startLevel, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "Start level must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "Start level must be within <-32767; 32767>");
     return false;
   }
 
   if (!checkBoundsInclusive(params->endLevel, -0x7FFF, 0x7FFF)) {
-    QMessageBox::warning(nullptr, CAPTION, "End level must be within <-32767; 32767>");
+    QMessageBox::warning(nullptr, PRERR_CAPTION, "End level must be within <-32767; 32767>");
     return false;
   }
 
