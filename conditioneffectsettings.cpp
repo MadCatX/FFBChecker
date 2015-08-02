@@ -1,6 +1,5 @@
 #include "conditioneffectsettings.h"
 #include "ui_conditioneffectsettings.h"
-#include <QDebug>
 
 ConditionEffectSettings::ConditionEffectSettings(QWidget* parent) :
   EffectSettings(parent),
@@ -22,7 +21,6 @@ void ConditionEffectSettings::axisChanged(const int idx)
   ui->qstw_leftSat->setCurrentIndex(idx);
   ui->qstw_rightCoeff->setCurrentIndex(idx);
   ui->qstw_rightSat->setCurrentIndex(idx);
-  qDebug() << "Axis changed" << idx;
 }
 
 QString ConditionEffectSettings::conditionSubtypeToConditionName(const ConditionSubtypes subtype) const

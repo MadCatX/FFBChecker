@@ -1,7 +1,6 @@
 #include "sdl2ffbdevice.h"
 #include "sdl2ffbeffectfactory.h"
 #include <QtWidgets/QMessageBox>
-#include <QtCore/QDebug>
 
 #define CHECK_EFFECT_IDX(idx) if (idx < 0 || idx > c_maxEffectCount) return false
 
@@ -236,39 +235,31 @@ bool SDL2FFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::
   else
     return false;
 
-  if (sdlEff == nullptr) {
-    qDebug() << "Unable to create effect";
+  if (sdlEff == nullptr)
     return false;
-  }
 
-  if (!sdlEff->setParameters(parameters)) {
-    qDebug() << "Unable to set effect parameters, some values are probably invalid.";
+  if (!sdlEff->setParameters(parameters))
     return false;
-  }
 
   /* There is no effect in the selected slot */
   if (m_effects[idx]->type() != FFBEffectTypes::NONE) {
     /* Effects are not of the same type, delete the previous effect and create a new one */
     if (*m_effects[idx] != *sdlEff) {
       if (!removeEffect(idx)) {
-	qDebug() << "Recreating effect";
-	return false;
+        return false;
       }
     } else {
       /* Effects are of the same type, update it */
-      qDebug() << "Updating effect";
 
       underlEff = sdlEff->createFFstruct();
-      if (underlEff == nullptr) {
-	qDebug() << "SDL2: Unable to create effect data";
-	return false;
-      }
+      if (underlEff == nullptr)
+        return false;
 
       intIdx = SDL_HapticUpdateEffect(c_haptic, std::static_pointer_cast<SDL2FFBEffect>(m_effects[idx])->internalIdx(), underlEff);
       if (intIdx < 0) {
-	QMessageBox::critical(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to update the effect:\n%1").arg(SDL_GetError()));
-	m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
-	return true;
+        QMessageBox::critical(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to update the effect:\n%1").arg(SDL_GetError()));
+        m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::UPLOADED);
+        return true;
       }
       sdlEff->setStatus(m_effects[idx]->status());
 
@@ -276,12 +267,9 @@ bool SDL2FFBDevice::uploadEffect(const int idx, const FFBEffectTypes type, std::
     }
   }
 
-  qDebug() << "Creating new effect";
   underlEff = sdlEff->createFFstruct();
-  if (underlEff == nullptr) {
-    qDebug() << "SDL2: Unable to create effect data";
+  if (underlEff == nullptr)
     return false;
-  }
 
   intIdx = SDL_HapticNewEffect(c_haptic, underlEff);
   if (intIdx < 0) {

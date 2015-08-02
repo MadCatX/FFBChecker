@@ -10,12 +10,12 @@ public:
   SDL2FFBConditionEffect();
   virtual SDL_HapticEffect* createFFstruct();
   inline const std::shared_ptr<FFBEffectParameters> parameters() const { return m_params; }
-  bool setParameters(std::shared_ptr<FFBEffectParameters> params);
+  bool setParameters(const std::shared_ptr<FFBEffectParameters> params);
 
   bool operator==(const FFBEffect& other) const;
 
 private:
-  bool setParameters(std::shared_ptr<FFBConditionEffectParameters> params);
+  bool setParameters(const std::shared_ptr<FFBConditionEffectParameters> params);
 
   std::shared_ptr<FFBConditionEffectParameters> m_params;
 };

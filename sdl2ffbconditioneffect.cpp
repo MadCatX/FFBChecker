@@ -53,7 +53,7 @@ SDL_HapticEffect* SDL2FFBConditionEffect::createFFstruct()
   return effect;
 }
 
-bool SDL2FFBConditionEffect::setParameters(std::shared_ptr<FFBEffectParameters> params)
+bool SDL2FFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParameters> params)
 {
   try {
     const std::shared_ptr<FFBConditionEffectParameters> iParams = std::dynamic_pointer_cast<FFBConditionEffectParameters>(params);
@@ -63,7 +63,7 @@ bool SDL2FFBConditionEffect::setParameters(std::shared_ptr<FFBEffectParameters> 
   }
 }
 
-bool SDL2FFBConditionEffect::setParameters(std::shared_ptr<FFBConditionEffectParameters> params)
+bool SDL2FFBConditionEffect::setParameters(const std::shared_ptr<FFBConditionEffectParameters> params)
 {
   if (!GlobalSettings::GS()->doSanityChecks)
     return true;

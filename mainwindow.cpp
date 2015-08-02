@@ -2,9 +2,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets/QMessageBox>
-#include <QDebug>
 
+#ifdef FFBC_PLATFORM_LINUX
 #include "linuxdeviceprober.h"
+#endif
 #ifdef FFBC_HAVE_SDL2
 #include "sdl2deviceprober.h"
 #endif
@@ -37,14 +38,16 @@ MainWindow::MainWindow(const QString& title, QWidget* parent) :
     ui->ql_noChecksWarning->setHidden(true);
 
   /* Fill the list of available interfaces */
+#ifdef FFBC_PLATFORM_LINUX
   ui->cbox_interfaces->addItem("Linux API", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::LINUX));
+#endif
 #ifdef FFBC_HAVE_SDL2
   if (SDL2DeviceProber::initializeSDL())
     ui->cbox_interfaces->addItem("SDL2", static_cast<std::underlying_type<DeviceProber::DeviceInterfaces>::type>(DeviceProber::DeviceInterfaces::SDL2));
 #endif
 
   ui->cbox_interfaces->setCurrentIndex(0);
-  createDeviceProber(DeviceProber::DeviceInterfaces::LINUX);
+  onInterfaceSelected(0);
   fillDeviceList();
 
   connect(ui->cbox_devices, SIGNAL(activated(const int)), this, SLOT(onDeviceSelected(const int)));
@@ -72,9 +75,11 @@ bool MainWindow::createDeviceProber(const DeviceProber::DeviceInterfaces iface)
   }
 
   switch (iface) {
+#ifdef FFBC_PLATFORM_LINUX
   case DeviceProber::DeviceInterfaces::LINUX:
     prober = std::make_shared<LinuxDeviceProber>();
     break;
+#endif
 #ifdef FFBC_HAVE_SDL2
   case DeviceProber::DeviceInterfaces::SDL2:
     prober = std::make_shared<SDL2DeviceProber>();
@@ -193,9 +198,7 @@ void MainWindow::onEffectSlotSelected(const int cboxIdx)
     return;
   }
   FFBEffectTypes etype = m_activeDevice->effectTypeByEffectIdx(effectIdx);
-  qDebug() << static_cast<int>(etype);
   if (etype == FFBEffectTypes::NONE) {
-    qDebug() << "Empty effect";
     setEffectTypeIndexByType(etype);
     ui->qstw_effectSpecifics->setCurrentWidget(effectSettingsByType(FFBEffectTypes::CONSTANT));
     setEffectStatusText(FFBEffect::FFBEffectStatus::NOT_LOADED);
@@ -325,10 +328,9 @@ void MainWindow::onStartEffectClicked()
     return;
   }
 
-  if (!readEffectParameters(params, etype)) {
-    qDebug() << "Cannot read effect params.";
+  if (!readEffectParameters(params, etype))
     return;
-  }
+
   bool ret = m_activeDevice->startEffect(effectSlot, etype, params);
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
@@ -369,10 +371,9 @@ void MainWindow::onUploadEffectClicked()
     return;
   }
 
-  if (!readEffectParameters(params, etype)) {
-    qDebug() << "Cannot read effect params.";
+  if (!readEffectParameters(params, etype))
     return;
-  }
+
   bool ret = m_activeDevice->uploadEffect(effectSlot, etype, params);
   if (ret)
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectSlot));
@@ -552,7 +553,6 @@ bool MainWindow::readEffectParameters(std::shared_ptr<FFBEffectParameters>& para
       break;
     }
     default:
-      qDebug() << "Unhandled type of effect";
       return false;
   }
 

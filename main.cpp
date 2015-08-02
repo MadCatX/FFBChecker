@@ -3,7 +3,10 @@
 #include "mainwindow.h"
 #include <QtWidgets/QApplication>
 
-#include <QDebug>
+#ifdef FFBC_PLATFORM_WIN32
+#include <QtCore/QtPlugin>
+Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
+#endif
 
 const QString NO_CHECKS_ARG("--no-checks");
 
@@ -17,10 +20,9 @@ int main(int argc, char** argv)
   {
     bool doSanityChecks;
     QStringList cmdArgs = QCoreApplication::arguments();
-    if (cmdArgs.contains(NO_CHECKS_ARG)) {
+    if (cmdArgs.contains(NO_CHECKS_ARG))
       doSanityChecks = false;
-      qDebug() << "Disabling effect parameters sanity checks";
-    } else
+    else
       doSanityChecks = true;
 
    GlobalSettings::init(doSanityChecks);

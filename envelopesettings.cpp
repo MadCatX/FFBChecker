@@ -1,6 +1,5 @@
 #include "envelopesettings.h"
 #include "ui_envelopesettings.h"
-#include <QDebug>
 
 EnvelopeSettings::EnvelopeSettings(QWidget *parent) :
   QWidget(parent),

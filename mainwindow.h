@@ -13,7 +13,7 @@
 #include "rampeffectsettings.h"
 #include "rumbleeffectsettings.h"
 #include <memory>
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 namespace Ui {
   class MainWindow;
