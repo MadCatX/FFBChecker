@@ -78,6 +78,8 @@ bool LinuxFFBDevice::queryDeviceCapabilities()
   /* Query device-wide capabilities */
   if (testBit(FF_GAIN, caps))
     m_adjustableGain = true;
+  if (testBit(FF_AUTOCENTER, caps))
+    m_adjustableAC = true;
 
   return true;
 }
@@ -119,6 +121,34 @@ bool LinuxFFBDevice::removeEffect(const int idx)
     return false;
   return true;
 }
+
+bool LinuxFFBDevice::setAutocentering(const int strength)
+{
+  struct input_event evt;
+  int ret;
+
+  if (!m_adjustableAC) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, "Device does not have adjustable autocentering");
+    return false;
+  }
+
+  if (strength < 0 || strength > 0xFFFF) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, "Autocentering strength must be within <0; 65535>");
+    return false;
+  }
+
+  evt.type = EV_FF;
+  evt.code = FF_AUTOCENTER;
+  evt.value = strength;
+  ret = write(c_fd, &evt, sizeof(struct input_event));
+  if (ret != sizeof(struct input_event)) {
+    QMessageBox::warning(nullptr, LNXDEV_ERR_CAPTION, "Unable to set autocentering strength");
+    return false;
+  }
+
+  return true;
+}
+
 
 bool LinuxFFBDevice::setGain(const int gain)
 {

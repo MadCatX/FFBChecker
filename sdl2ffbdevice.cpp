@@ -81,6 +81,9 @@ bool SDL2FFBDevice::queryDeviceCapabilities()
   if (caps & SDL_HAPTIC_GAIN)
     m_adjustableGain = true;
 
+  if (caps & SDL_HAPTIC_AUTOCENTER)
+    m_adjustableAC = true;
+
   return true;
 }
 
@@ -124,6 +127,27 @@ bool SDL2FFBDevice::removeAndEraseEffect(const int idx)
   m_effects[idx]->setStatus(FFBEffect::FFBEffectStatus::NOT_LOADED);
   return true;
 }
+
+bool SDL2FFBDevice::setAutocentering(const int strength)
+{
+  if (!m_adjustableAC) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, "Device does not have adjustable autocentering");
+    return false;
+  }
+
+  if (strength < 0 || strength > 100) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, "Autocentering strength must be within <0; 100>");
+    return false;
+  }
+
+  if (SDL_HapticSetAutocenter(c_haptic, strength) < 0) {
+    QMessageBox::warning(nullptr, SDL2DEV_ERR_CAPTION, QString("Unable to set autocentering:\n%1").arg(SDL_GetError()));
+    return false;
+  }
+
+  return true;
+}
+
 
 bool SDL2FFBDevice::setGain(const int gain)
 {

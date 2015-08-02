@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>623</height>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,16 +28,6 @@
         </item>
         <item row="0" column="1">
          <widget class="QComboBox" name="cbox_devices"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="ql_effectSlots">
-          <property name="text">
-           <string>Effect slots:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="cbox_effectSlots"/>
         </item>
         <item row="3" column="0" colspan="2">
          <widget class="QPushButton" name="qpb_refreshDevices">
@@ -103,6 +93,30 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="ql_autocentering">
+        <property name="text">
+         <string>Autocentering:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="qle_autocentering">
+        <property name="text">
+         <string>65535</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="qpb_setAC">
+        <property name="text">
+         <string>Set AC</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>
@@ -127,6 +141,20 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ql_effectSlots">
+        <property name="text">
+         <string>Effect slots:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cbox_effectSlots"/>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QLabel" name="ql_effectStatus">

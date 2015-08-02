@@ -53,6 +53,7 @@ MainWindow::MainWindow(const QString& title, QWidget* parent) :
   connect(ui->cbox_interfaces, SIGNAL(activated(int)), this, SLOT(onInterfaceSelected(const int)));
   connect(ui->qpb_refreshDevices, SIGNAL(clicked()), this, SLOT(onRefreshDevicesClicked()));
   connect(ui->qpb_remove, SIGNAL(clicked()), this, SLOT(onRemoveEffectClicked()));
+  connect(ui->qpb_setAC, SIGNAL(clicked()), this, SLOT(onSetACClicked()));
   connect(ui->qpb_setGain, SIGNAL(clicked()), this, SLOT(onSetGainClicked()));
   connect(ui->qpb_start, SIGNAL(clicked()), this, SLOT(onStartEffectClicked()));
   connect(ui->qpb_stop, SIGNAL(clicked()), this, SLOT(onStopEffectClicked()));
@@ -272,6 +273,24 @@ void MainWindow::onRemoveEffectClicked()
   else
     setEffectStatusText(m_activeDevice->effectStatusByIdx(effectIdx));
 }
+
+void MainWindow::onSetACClicked()
+{
+  bool ok;
+  int strength;
+
+  if (m_activeDevice == nullptr)
+    return;
+
+  strength = ui->qle_autocentering->text().toInt(&ok);
+  if (!ok) {
+    QMessageBox::warning(this, res_inputFormatErrCap, "Invalid autocentering strength value");
+    return;
+  }
+
+  m_activeDevice->setAutocentering(strength);
+}
+
 
 void MainWindow::onSetGainClicked()
 {

@@ -10,6 +10,7 @@ public:
   void close();
   bool queryDeviceCapabilities();
   bool removeAndEraseEffect(const int idx);
+  bool setAutocentering(const int strength);
   bool setGain(const int idx);
   bool startEffect(const int idx, const FFBEffectTypes type, std::shared_ptr<FFBEffectParameters> parameters);
   bool stopEffect(const int idx);
