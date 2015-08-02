@@ -1,5 +1,4 @@
 #include "sdl2deviceprober.h"
-#include <QtCore/QDebug>
 #include <QtWidgets/QMessageBox>
 
 bool SDL2DeviceProber::s_SDLInited = false;
