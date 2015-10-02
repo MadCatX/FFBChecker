@@ -86,6 +86,15 @@ if (SDL2_FOUND)
         sdl2deviceprober.cpp)
 endif()
 
+set(FFBChecker_UIS
+    conditioneffectsettings.ui
+    constanteffectsettings.ui
+    envelopesettings.ui
+    mainwindow.ui
+    periodiceffectsettings.ui
+    rampeffectsettings.ui
+    rumbleeffectsettings.ui)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 if (SDL2_FOUND)
     include_directories(${SDL2_INCLUDE_DIRS})
