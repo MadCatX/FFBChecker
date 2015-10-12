@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.13)
+cmake_minimum_required(VERSION 2.8.12)
 
 project(FFBChecker)
 
@@ -33,7 +33,6 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif()
 
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(FFBChecker_SRCS
@@ -93,6 +92,7 @@ set(FFBChecker_UIS
     periodiceffectsettings.ui
     rampeffectsettings.ui
     rumbleeffectsettings.ui)
+qt5_wrap_ui(FFBChecker_UIS_WRAPPED ${FFBChecker_UIS})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 if (SDL2_FOUND)
@@ -105,7 +105,7 @@ endif()
 
 
 if (PLATFORM_LINUX)
-    add_executable(FFBChecker ${FFBChecker_SRCS})
+    add_executable(FFBChecker ${FFBChecker_SRCS} ${FFBChecker_UIS_WRAPPED})
     target_link_libraries(FFBChecker Qt5::Widgets)
 elseif (PLATFORM_WIN32)
     add_executable(FFBChecker WIN32 ${FFBChecker_SRCS})
