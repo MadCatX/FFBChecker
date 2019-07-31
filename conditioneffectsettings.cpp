@@ -52,7 +52,7 @@ bool ConditionEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffect
     const std::shared_ptr<FFBConditionEffectParameters> cdParams = std::dynamic_pointer_cast<FFBConditionEffectParameters>(params);
     return fillFromParameters(cdParams);
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
 }

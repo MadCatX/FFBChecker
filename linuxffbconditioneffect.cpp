@@ -50,7 +50,7 @@ bool LinuxFFBConditionEffect::setParameters(const std::shared_ptr<FFBEffectParam
   try {
     return setParameters(std::dynamic_pointer_cast<FFBConditionEffectParameters>(params));
   } catch (const std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;

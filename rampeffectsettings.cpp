@@ -32,7 +32,7 @@ bool RampEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectParam
     ui->qle_startLevel->setText(QString::number(rfParams->startLevel));
     return ui->qwid_envelope->fillFromParameters(params);
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;

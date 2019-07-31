@@ -26,7 +26,7 @@ bool ConstantEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectP
     ui->qle_level->setText(QString::number(cfParams->level));
     return ui->qwid_envelope->fillFromParameters(params);
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;

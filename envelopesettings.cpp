@@ -39,7 +39,7 @@ bool EnvelopeSettings::fillFromParameters(const std::shared_ptr<FFBEffectParamet
     ui->qle_fadeLevel->setText(QString::number(envParams->fadeLevel));
     return true;
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;

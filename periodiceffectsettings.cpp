@@ -31,7 +31,7 @@ bool PeriodicEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectP
     ui->qle_phase->setText(QString::number(pParams->phase));
     return ui->qwid_envelope->fillFromParameters(pParams);
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;

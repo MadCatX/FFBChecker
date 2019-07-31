@@ -17,7 +17,7 @@ bool RumbleEffectSettings::fillFromParameters(const std::shared_ptr<FFBEffectPar
     ui->qle_weakMag->setText(QString::number(ruParams->weakMagnitude));
     return true;
   } catch (std::bad_cast& ex) {
-    qCritical(ex.what());
+    qCritical("%s\n", ex.what());
     return false;
   }
   return false;
