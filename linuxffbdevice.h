@@ -40,4 +40,4 @@ public slots:
 
 };
 
-#endif // FFBDEVICE_H
+#endif // LINUXFFBDEVICE_H

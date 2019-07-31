@@ -7,6 +7,8 @@
 
 class FFBDevice {
 public:
+  virtual ~FFBDevice() = default;
+
   const std::vector<ConditionSubtypes>& availableConditionSubtypesList() const;
   const std::vector<FFBEffectTypes>& availableEffectsList() const;
   const std::vector<PeriodicWaveforms>& availableWaveformsList() const;

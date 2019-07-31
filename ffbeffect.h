@@ -10,6 +10,7 @@ public:
   enum class FFBEffectStatus { PLAYING, UPLOADED, NOT_LOADED };
 
   explicit FFBEffect(FFBEffectTypes type);
+  virtual ~FFBEffect() = default;
   virtual const std::shared_ptr<FFBEffectParameters> parameters() const = 0;
   virtual bool setParameters(const std::shared_ptr<FFBEffectParameters> params) = 0;
   inline void setStatus(FFBEffectStatus status) { m_status = status; }

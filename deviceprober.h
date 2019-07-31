@@ -21,6 +21,8 @@ public:
     SDL2
   };
 
+  virtual ~DeviceProber() = default;
+
   virtual void closeAllDevices() = 0;
   virtual DeviceList listDevices() = 0;
   virtual std::shared_ptr<FFBDevice> openDevice(const QString& id) = 0;
