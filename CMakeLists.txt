@@ -7,7 +7,7 @@ find_package(Qt5Widgets REQUIRED)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     # Linux-specific definitions
     set(PLATFORM_LINUX 1)
-    add_definitions("-std=c++11 -Wall -Wextra")
+    add_definitions("-std=c++11 -Wall -Wextra -pedantic")
     add_definitions("-DFFBC_PLATFORM_LINUX")
 
     if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
