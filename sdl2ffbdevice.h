@@ -1,7 +1,7 @@
 #ifndef SDL2FFBDEVICE_H
 #define SDL2FFBDEVICE_H
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include "ffbdevice.h"
 
 class SDL2FFBDevice : public FFBDevice {
