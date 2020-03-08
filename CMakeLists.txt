@@ -12,6 +12,7 @@ find_package(Qt5Widgets REQUIRED)
 
 if (UNIX)
     add_definitions("-DFFBC_PLATFORM_LINUX")
+    add_definitions("-Wall -pedantic")
 
     if ("${SDL2_XDIR}" STREQUAL "")
         find_package(SDL2)
