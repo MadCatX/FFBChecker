@@ -2,7 +2,7 @@
 #define SDL2DEVICEPROBER_H
 
 #include "deviceprober.h"
-#include "SDL.h"
+#include <SDL.h>
 #include "sdl2ffbdevice.h"
 #include <list>
 

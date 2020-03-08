@@ -1,38 +1,40 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(FFBChecker)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    # Linux-specific definitions
-    set(PLATFORM_LINUX 1)
-    add_definitions("-std=c++11 -Wall -Wextra -pedantic")
+if (UNIX)
     add_definitions("-DFFBC_PLATFORM_LINUX")
 
-    if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
-        add_definitions("-ggdb -g3")
+    if ("${SDL2_XDIR}" STREQUAL "")
+        find_package(SDL2)
+        if (SDL2_FOUND)
+            add_definitions("-DFFBC_HAVE_SDL2")
+            set(SDL2_CMAKE_AUTO 1)
+        endif()
+    else ()
+        # Assume that SDL2 is available
+        set(SDL2_FOUND 1)
     endif()
-
-    # Try to utilize SDL2 if it is available
-    include(FindPkgConfig)
-    pkg_search_module(SDL2 sdl2)
-    if (SDL2_FOUND)
-        add_definitions("-DFFBC_HAVE_SDL2")
-    endif()
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(PLATFORM_WIN32 1)
+elseif (WIN32)
     add_definitions("-DFFBC_PLATFORM_WIN32 -DFFBC_HAVE_SDL2")
 
-    # Enforce SDL2 on Windows
+    # Enforce SDL2 on Win32
     set(SDL2_FOUND 1)
-    # Adjust these paths accordingly to your setup
-    set(QT_LIBS_PATH "C://Qt-Static//bin_noicu")
-    set(SDL2_INCLUDE_DIRS "C://Users//Sacrilegium//Hacking//SDL2-2.0.3//include")
-    set(SDL2_LIBRARIES ${SDL2_LIBRARIES} "C://Users//Sacrilegium//Hacking//SDL2-2.0.3//lib//x86//SDL2.lib")
+    # SDL2_XDIR has to be set manually
 endif()
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(FFBChecker_SRCS
@@ -55,9 +57,10 @@ set(FFBChecker_SRCS
     mainwindow.cpp
     periodiceffectsettings.cpp
     rampeffectsettings.cpp
-    rumbleeffectsettings.cpp)
+    rumbleeffectsettings.cpp
+    )
 
-if (PLATFORM_LINUX)
+if (UNIX)
     set(FFBChecker_SRCS
         ${FFBChecker_SRCS}
         linuxdeviceprober.cpp
@@ -68,7 +71,8 @@ if (PLATFORM_LINUX)
         linuxffbeffect.cpp
         linuxffbeffectfactory.cpp
         linuxffbconstanteffect.cpp
-        linuxffbconditioneffect.cpp)
+        linuxffbconditioneffect.cpp
+        )
 endif()
 
 if (SDL2_FOUND)
@@ -81,46 +85,43 @@ if (SDL2_FOUND)
         sdl2ffbconditioneffect.cpp
         sdl2ffbperiodiceffect.cpp
         sdl2ffbrampeffect.cpp
-        sdl2deviceprober.cpp)
+        sdl2deviceprober.cpp
+        )
 endif()
 
-set(FFBChecker_UIS
-    conditioneffectsettings.ui
-    constanteffectsettings.ui
-    envelopesettings.ui
-    mainwindow.ui
-    periodiceffectsettings.ui
-    rampeffectsettings.ui
-    rumbleeffectsettings.ui)
-qt5_wrap_ui(FFBChecker_UIS_WRAPPED ${FFBChecker_UIS})
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-if (SDL2_FOUND)
-    include_directories(${SDL2_INCLUDE_DIRS})
+if (SDL2_FOUND AND NOT SDL2_CMAKE_AUTO)
+    include_directories(${INCLUDE_DIRECTORIES}
+                        SYSTEM "${SDL2_XDIR}/include"
+                        )
+    link_directories(${LINK_DIRECTORIES}
+                     "${SDL2_XDIR}/lib"
+                     )
 endif()
 
-if (PLATFORM_WIN32)
-    include_directories("${QT_LIBS_PATH}//include")
-endif()
-
-
-if (PLATFORM_LINUX)
-    add_executable(FFBChecker ${FFBChecker_SRCS} ${FFBChecker_UIS_WRAPPED})
-    target_link_libraries(FFBChecker Qt5::Widgets)
-elseif (PLATFORM_WIN32)
+if (UNIX)
+    add_executable(FFBChecker ${FFBChecker_SRCS})
+elseif (WIN32)
     add_executable(FFBChecker WIN32 ${FFBChecker_SRCS})
-    target_link_libraries(FFBChecker "Ws2_32.lib")
-    target_link_libraries(FFBChecker "winmm.lib")
-    target_link_libraries(FFBChecker "imm32.lib")
-    target_link_libraries(FFBChecker "${QT_LIBS_PATH}//lib//qtpcre.lib")
-    target_link_libraries(FFBChecker "${QT_LIBS_PATH}//lib//qtfreetype.lib")
-    target_link_libraries(FFBChecker Qt5::WinMain Qt5::Widgets)
-    target_link_libraries(FFBChecker "${QT_LIBS_PATH}//lib//qtharfbuzzng.lib")
-    target_link_libraries(FFBChecker "${QT_LIBS_PATH}//lib//Qt5PlatformSupport.lib")
-    target_link_libraries(FFBChecker "${QT_LIBS_PATH}//plugins//platforms//qwindows.lib")
+endif ()
+
+target_link_libraries(FFBChecker
+                      PRIVATE Qt5::Core
+                      PRIVATE Qt5::Gui
+                      PRIVATE Qt5::Widgets
+                      )
+
+if (WIN32)
+    target_link_libraries(FFBChecker
+                          PRIVATE "Ws2_32.lib"
+                          PRIVATE "winmm.lib"
+                          PRIVATE "imm32.lib"
+                          )
 endif()
 
 if (SDL2_FOUND)
-    target_link_libraries(FFBChecker ${SDL2_LIBRARIES})
+    if (SDL2_CMAKE_AUTO)
+        target_link_libraries(FFBChecker PRIVATE SDL2::SDL2)
+    else ()
+        target_link_libraries(FFBChecker PRIVATE SDL2)
+    endif ()
 endif()
-
