@@ -31,7 +31,9 @@ cd into the source directory and run:
 	cmake ../ -DCMAKE_BUILD_TYPE=Release
 	make
 
-Note that at least CMake 2.8.13 is required. SDL2 header files and PkgConfig are required to enable SDL2 support.
+Note that at least CMake 3.1 is required.
+
+SDL2 is an optional dependency on Linux. On distributions that ship CMake-enabled SDL2 builds, SDL2 gets configured automatically. In other cases the `SDL2_XDIR` variable must be set to point to a valid SDL2 library installation. Such a directory must contain `include` and `lib` directories with appropriate content.
 
 To launch FFBChecker, run:
 
