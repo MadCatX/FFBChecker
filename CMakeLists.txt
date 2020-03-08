@@ -10,6 +10,8 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
+add_definitions("-DQT_DEPRECATED_WARNINGS -DQT_DISABLE_DEPRECATED_BEFORE=0x060000")
+
 if (UNIX)
     add_definitions("-DFFBC_PLATFORM_LINUX")
     add_definitions("-Wall -pedantic")
