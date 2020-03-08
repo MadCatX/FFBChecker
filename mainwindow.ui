@@ -33,7 +33,14 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QComboBox" name="cbox_devices"/>
+         <widget class="QComboBox" name="cbox_devices">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item row="3" column="0" colspan="2">
          <widget class="QPushButton" name="qpb_refreshDevices">
@@ -50,7 +57,14 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QComboBox" name="cbox_interfaces"/>
+         <widget class="QComboBox" name="cbox_interfaces">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -158,7 +172,14 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="cbox_effectSlots"/>
+       <widget class="QComboBox" name="cbox_effectSlots">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -201,8 +222,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>440</width>
-         <height>233</height>
+         <width>436</width>
+         <height>221</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -327,7 +348,14 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="cbox_effectTypes"/>
+           <widget class="QComboBox" name="cbox_effectTypes">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
